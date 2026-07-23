@@ -7,9 +7,9 @@ const geist = Geist({ subsets: ["latin"] });
 const geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MECTEC - Automotive Excellence in Bolivia",
+  title: "MECTEC | Servicio Mecánico Automotriz en Cochabamba",
   description:
-    "Premium automotive dealership featuring European vehicles with extended warranty and professional services",
+    "Centro profesional de cuidado automotriz especializado en diagnóstico computarizado, mantenimiento preventivo, reparación mecánica y asesoría para la compra de vehículos. MECTEC, Cochabamba - Bolivia.",
 
   icons: {
     icon: [
