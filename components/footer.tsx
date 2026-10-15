@@ -1,4 +1,12 @@
-"use client";
+import Logo from "@/components/logo";
+import { SITE, navLinks, whatsappLink } from "@/lib/site";
+
+const services = [
+  "Diagnóstico computarizado",
+  "Mantenimiento preventivo",
+  "Reparación especializada",
+  "Inspección antes de comprar",
+];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -6,156 +14,90 @@ export default function Footer() {
   return (
     <footer className="bg-card border-t border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer */}
-        <div className="py-16 grid md:grid-cols-4 gap-8">
-          {/* Brand */}
+        <div className="py-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-foreground">MECTEC</h3>
+            <Logo />
             <p className="text-foreground/60 leading-relaxed">
-              Tu distribuidor de confianza para vehículos europeos de calidad en
-              Bolivia.
+              Taller mecánico en {SITE.city}: diagnóstico profesional,
+              mantenimiento y reparación con transparencia.
             </p>
-            <a
-              href="https://wa.me/+591 77924302"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-accent hover:text-accent/80 transition-colors"
-            >
-              Contactar
-            </a>
           </div>
 
-          {/* Quick Links */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">Navegación</h4>
             <ul className="space-y-2">
-              <li>
-                <a
-                  href="#why"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Por qué MECTEC
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#guarantee"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Garantía
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#process"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Proceso
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#services"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Servicios
-                </a>
-              </li>
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-foreground/60 hover:text-foreground transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Services */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">Servicios</h4>
             <ul className="space-y-2">
-              <li>
-                <a
-                  href="#services"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Venta de Vehículos
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#services"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Financiamiento
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#services"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Mantenimiento
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#services"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
-                >
-                  Reparaciones
-                </a>
-              </li>
+              {services.map((service) => (
+                <li key={service}>
+                  <a
+                    href="#services"
+                    className="text-foreground/60 hover:text-foreground transition-colors"
+                  >
+                    {service}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Info */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">Información</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-foreground/60">
               <li>
-                <p className="text-foreground/60">
-                  <strong>Teléfono:</strong> +591 77924302
-                </p>
+                <span className="font-semibold text-foreground/80">
+                  WhatsApp:
+                </span>{" "}
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {SITE.phone}
+                </a>
               </li>
               <li>
-                <p className="text-foreground/60">
-                  <strong>Email:</strong> info@mectec.bo
-                </p>
+                <span className="font-semibold text-foreground/80">
+                  Ubicación:
+                </span>{" "}
+                <a
+                  href={SITE.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {SITE.city}, {SITE.country}
+                </a>
               </li>
               <li>
-                <p className="text-foreground/60">
-                  <strong>Ubicación:</strong>Cochabamba, Bolivia
-                </p>
-              </li>
-              <li>
-                <p className="text-foreground/60">
-                  <strong>Horario:</strong> Lunes a Sábado 9am-6pm
-                </p>
+                <span className="font-semibold text-foreground/80">
+                  Horario:
+                </span>{" "}
+                {SITE.hoursLabel}
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Footer */}
-        <div className="border-t border-border py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-border py-8 text-center sm:text-left">
           <p className="text-foreground/60 text-sm">
-            © {currentYear} MECTEC. Todos los derechos reservados.
+            © {currentYear} {SITE.name}. Todos los derechos reservados.
           </p>
-          <div className="flex gap-6">
-            <a
-              href="#"
-              className="text-foreground/60 hover:text-foreground text-sm transition-colors"
-            >
-              Privacidad
-            </a>
-            <a
-              href="#"
-              className="text-foreground/60 hover:text-foreground text-sm transition-colors"
-            >
-              Términos
-            </a>
-            <a
-              href="#"
-              className="text-foreground/60 hover:text-foreground text-sm transition-colors"
-            >
-              Cookies
-            </a>
-          </div>
         </div>
       </div>
     </footer>

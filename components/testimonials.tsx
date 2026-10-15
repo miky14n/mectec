@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { SITE } from "@/lib/site";
 
 interface Testimonial {
   name: string;
@@ -12,182 +13,194 @@ interface Testimonial {
   avatar?: string;
 }
 
-// Reseñas de respaldo por si la API tarda o falla
-const fallbackTestimonials: Testimonial[] = [
-  {
-    name: "Carlos M.",
-    role: "Cliente en Google Maps",
-    text: "Excelente servicio mecánico. Muy transparentes con el diagnóstico y el trabajo realizado en mi vehículo. Totalmente recomendado.",
-    rating: 5,
-  },
-  {
-    name: "Roberto C.",
-    role: "Cliente en Google Maps",
-    text: "Atención impecable y muy profesional. Mantenimiento preventivo rápido y con repuestos de calidad.",
-    rating: 5,
-  },
-  {
-    name: "Grover T.",
-    role: "Cliente en Google Maps",
-    text: "Cumplieron puntualmente con los tiempos de entrega. Muy satisfecho con la atención en MECTEC.",
-    rating: 5,
-  },
-];
+type Status = "loading" | "ready" | "empty";
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [testimonials, setTestimonials] =
-    useState<Testimonial[]>(fallbackTestimonials);
-  const [loading, setLoading] = useState(true);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [status, setStatus] = useState<Status>("loading");
 
-  // Consumimos nuestra API route al montar el componente
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchReviews() {
       try {
         const res = await fetch("/api/reviews");
         const data = await res.json();
+        if (cancelled) return;
 
         if (Array.isArray(data) && data.length > 0) {
           setTestimonials(data);
+          setStatus("ready");
+        } else {
+          setStatus("empty");
         }
       } catch (error) {
-        console.error("Error al cargar testimonios dinámicos:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error al cargar reseñas:", error);
+        if (!cancelled) setStatus("empty");
       }
     }
 
     fetchReviews();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
+  const count = testimonials.length;
+  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % count);
+  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + count) % count);
 
-  const prevSlide = () => {
-    setCurrentIndex(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length,
-    );
-  };
-
-  const currentTestimonial = testimonials[currentIndex];
+  const current = testimonials[currentIndex];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background border-b border-border">
+    <section
+      id="testimonials"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-card/40 border-y border-border"
+    >
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide">
-            Lo que Dicen Nuestros Clientes
+        <div className="text-center mb-12 space-y-4">
+          <p className="text-brand font-semibold text-sm uppercase tracking-wide">
+            Opiniones en Google
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance">
-            Testimonios
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground text-balance">
+            Lo que dicen nuestros clientes
           </h2>
         </div>
 
-        {/* Carousel */}
-        <div className="relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              className="p-12 bg-card border border-border rounded-lg min-h-[280px] flex flex-col justify-between"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.5 }}
+        {status === "loading" && (
+          <div
+            className="p-8 sm:p-12 bg-card border border-border rounded-xl min-h-[280px] animate-pulse space-y-4"
+            aria-label="Cargando reseñas"
+          >
+            <div className="h-5 w-32 rounded bg-foreground/10" />
+            <div className="h-4 w-full rounded bg-foreground/10" />
+            <div className="h-4 w-5/6 rounded bg-foreground/10" />
+            <div className="h-4 w-2/3 rounded bg-foreground/10" />
+          </div>
+        )}
+
+        {status === "empty" && (
+          <div className="p-8 sm:p-12 bg-card border border-border rounded-xl text-center space-y-4">
+            <p className="text-lg text-foreground/70">
+              Lee las reseñas de nuestros clientes directamente en Google Maps.
+            </p>
+            <a
+              href={SITE.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-3 bg-accent text-accent-foreground font-semibold rounded hover:bg-accent/90 transition-colors"
             >
-              <div className="space-y-6">
-                {/* Rating */}
-                <motion.div
-                  className="flex gap-1"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  {Array.from({ length: currentTestimonial?.rating || 5 }).map(
-                    (_, i) => (
-                      <motion.span
+              Ver reseñas en Google
+            </a>
+          </div>
+        )}
+
+        {status === "ready" && current && (
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.figure
+                key={currentIndex}
+                className="p-8 sm:p-12 bg-card border border-border rounded-xl min-h-[280px] flex flex-col justify-between gap-6"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35 }}
+              >
+                <div className="space-y-6">
+                  <div
+                    className="flex gap-1"
+                    role="img"
+                    aria-label={`${current.rating} de 5 estrellas`}
+                  >
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
                         key={i}
-                        className="text-xl"
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ delay: 0.2 + i * 0.1 }}
-                      >
-                        ⭐
-                      </motion.span>
-                    ),
-                  )}
-                </motion.div>
+                        aria-hidden="true"
+                        className={`h-5 w-5 ${
+                          i < current.rating
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-foreground/20"
+                        }`}
+                      />
+                    ))}
+                  </div>
 
-                {/* Text */}
-                <motion.blockquote
-                  className="text-xl text-foreground/80 italic leading-relaxed"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  &quot;{currentTestimonial?.text}&quot;
-                </motion.blockquote>
+                  <blockquote className="text-lg sm:text-xl text-foreground/80 leading-relaxed">
+                    “{current.text}”
+                  </blockquote>
+                </div>
 
-                {/* Author */}
-                <motion.div
-                  className="space-y-1 flex items-center gap-4 pt-2"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  {currentTestimonial?.avatar && (
+                <figcaption className="flex items-center gap-4">
+                  {current.avatar && (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={currentTestimonial.avatar}
-                      alt={currentTestimonial.name}
+                      src={current.avatar}
+                      alt=""
+                      referrerPolicy="no-referrer"
                       className="w-12 h-12 rounded-full object-cover border border-border"
                     />
                   )}
                   <div>
                     <p className="font-semibold text-foreground">
-                      {currentTestimonial?.name}
+                      {current.name}
                     </p>
-                    <p className="text-sm text-foreground/60">
-                      {currentTestimonial?.role}
-                    </p>
+                    <p className="text-sm text-foreground/60">{current.role}</p>
                   </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+                </figcaption>
+              </motion.figure>
+            </AnimatePresence>
 
-          {/* Navigation */}
-          <div className="flex justify-center gap-4 mt-8">
-            <button
-              onClick={prevSlide}
-              className="p-2 hover:bg-border rounded-full transition-colors"
-              aria-label="Anterior testimonial"
-            >
-              <ChevronLeft className="w-6 h-6 text-accent" />
-            </button>
-
-            {/* Dots */}
-            <div className="flex gap-2 items-center">
-              {testimonials.map((_, i) => (
+            {count > 1 && (
+              <div className="flex justify-center gap-4 mt-8">
                 <button
-                  key={i}
-                  onClick={() => setCurrentIndex(i)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    i === currentIndex ? "bg-accent" : "bg-border"
-                  }`}
-                  aria-label={`Ir a testimonial ${i + 1}`}
-                />
-              ))}
-            </div>
+                  onClick={prevSlide}
+                  className="p-2 hover:bg-border rounded-full transition-colors"
+                  aria-label="Reseña anterior"
+                >
+                  <ChevronLeft className="w-6 h-6 text-brand" />
+                </button>
 
-            <button
-              onClick={nextSlide}
-              className="p-2 hover:bg-border rounded-full transition-colors"
-              aria-label="Siguiente testimonial"
-            >
-              <ChevronRight className="w-6 h-6 text-accent" />
-            </button>
+                <div className="flex gap-1 items-center">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentIndex(i)}
+                      className="p-1.5"
+                      aria-label={`Ir a la reseña ${i + 1}`}
+                      aria-current={i === currentIndex}
+                    >
+                      <span
+                        className={`block w-2 h-2 rounded-full transition-colors ${
+                          i === currentIndex ? "bg-accent" : "bg-foreground/20"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={nextSlide}
+                  className="p-2 hover:bg-border rounded-full transition-colors"
+                  aria-label="Siguiente reseña"
+                >
+                  <ChevronRight className="w-6 h-6 text-brand" />
+                </button>
+              </div>
+            )}
+
+            <p className="mt-6 text-center">
+              <a
+                href={SITE.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold text-brand hover:underline"
+              >
+                Ver todas las reseñas en Google Maps
+              </a>
+            </p>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

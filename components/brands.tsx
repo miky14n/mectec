@@ -1,5 +1,3 @@
-"use client";
-
 import {
   siToyota,
   siSuzuki,
@@ -34,134 +32,110 @@ type Brand = {
   };
 };
 
-export default function Brands() {
-  const japaneseBrands: Brand[] = [
-    { name: "Toyota", icon: siToyota },
-    { name: "Suzuki", icon: siSuzuki },
-    { name: "Nissan", icon: siNissan },
-    { name: "Mazda", icon: siMazda },
-    { name: "Mitsubishi", icon: siMitsubishi },
-    { name: "Honda", icon: siHonda },
-  ];
+const japaneseBrands: Brand[] = [
+  { name: "Toyota", icon: siToyota },
+  { name: "Suzuki", icon: siSuzuki },
+  { name: "Nissan", icon: siNissan },
+  { name: "Mazda", icon: siMazda },
+  { name: "Mitsubishi", icon: siMitsubishi },
+  { name: "Honda", icon: siHonda },
+];
 
-  const koreanBrands: Brand[] = [
-    { name: "Hyundai", icon: siHyundai },
-    { name: "Kia", icon: siKia },
-  ];
+const koreanBrands: Brand[] = [
+  { name: "Hyundai", icon: siHyundai },
+  { name: "Kia", icon: siKia },
+];
 
-  const americanBrands: Brand[] = [
-    { name: "Chevrolet", icon: siChevrolet },
-    { name: "Ford", icon: siFord },
-  ];
+const americanBrands: Brand[] = [
+  { name: "Chevrolet", icon: siChevrolet },
+  { name: "Ford", icon: siFord },
+];
 
-  const europeanBrands: Brand[] = [
-    { name: "Volkswagen", icon: siVolkswagen },
-    { name: "Renault", icon: siRenault },
-    { name: "Peugeot", icon: siPeugeot },
-  ];
+const europeanBrands: Brand[] = [
+  { name: "Volkswagen", icon: siVolkswagen },
+  { name: "Renault", icon: siRenault },
+  { name: "Peugeot", icon: siPeugeot },
+];
 
-  // Estas marcas aún no existen en Simple Icons
-  const chineseBrands: Brand[] = [
-    { name: "Changan", icon: siChangan },
-    { name: "JAC", icon: siJac },
-    { name: "Jetour", icon: siJetour },
-    { name: "Chery", icon: siChery },
-    { name: "Geely", icon: siGeely },
-    { name: "Foton", icon: siFoton },
-    { name: "Haval", icon: siHaval },
-    { name: "GWM", icon: siGwm },
-  ];
+// Estas marcas no existen en Simple Icons; sus SVG están en ./ui/icons/icon
+const chineseBrands: Brand[] = [
+  { name: "Changan", icon: siChangan },
+  { name: "JAC", icon: siJac },
+  { name: "Jetour", icon: siJetour },
+  { name: "Chery", icon: siChery },
+  { name: "Geely", icon: siGeely },
+  { name: "Foton", icon: siFoton },
+  { name: "Haval", icon: siHaval },
+  { name: "GWM", icon: siGwm },
+];
 
-  const BrandSection = ({
-    title,
-    brands,
-    columns,
-  }: {
-    title: string;
-    brands: Brand[];
-    columns: string;
-  }) => (
-    <div className="mb-14">
-      <h3 className="mb-6 text-lg font-semibold uppercase tracking-wide text-accent">
-        {title}
-      </h3>
+const groups = [
+  { title: "Japonesas", brands: japaneseBrands },
+  { title: "Coreanas", brands: koreanBrands },
+  { title: "Americanas", brands: americanBrands },
+  { title: "Europeas", brands: europeanBrands },
+  { title: "Chinas", brands: chineseBrands },
+];
 
-      <div className={`grid ${columns} gap-6`}>
-        {brands.map((brand) => (
-          <div
-            key={brand.name}
-            className="group flex h-28 items-center justify-center rounded-xl border border-border bg-card transition-all duration-300 hover:border-accent hover:bg-accent/5"
-          >
-            {brand.icon ? (
-              <div
-                title={brand.name}
-                className="flex h-14 w-28 items-center justify-center opacity-60 transition-all duration-300 group-hover:scale-105 group-hover:opacity-100"
-                dangerouslySetInnerHTML={{
-                  __html: brand.icon.svg.replace(
-                    "<svg",
-                    '<svg fill="currentColor" class="w-full h-full text-white"',
-                  ),
-                }}
-              />
-            ) : (
-              <span className="text-sm font-semibold tracking-wide text-white/70 transition-colors group-hover:text-white">
-                {brand.name}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
+function BrandTile({ brand }: { brand: Brand }) {
+  return (
+    <div className="group flex h-20 items-center justify-center rounded-xl border border-border bg-card px-4 transition-colors duration-300 hover:border-accent/60">
+      {brand.icon ? (
+        <div
+          role="img"
+          aria-label={brand.name}
+          title={brand.name}
+          className="flex h-10 w-24 items-center justify-center text-foreground opacity-60 transition-opacity duration-300 group-hover:opacity-100"
+          dangerouslySetInnerHTML={{
+            __html: brand.icon.svg.replace(
+              "<svg",
+              '<svg fill="currentColor" aria-hidden="true" class="w-full h-full"',
+            ),
+          }}
+        />
+      ) : (
+        <span className="text-sm font-semibold tracking-wide text-foreground/70">
+          {brand.name}
+        </span>
+      )}
     </div>
   );
+}
 
+export default function Brands() {
   return (
-    <section className="border-b border-border bg-background py-20 px-4 sm:px-6 lg:px-8">
+    <section
+      id="brands"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-card/40 border-y border-border"
+    >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-16 space-y-4 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-            Marcas que Atendemos
+        <div className="mb-14 space-y-4 text-center">
+          <p className="text-sm font-semibold uppercase tracking-wide text-brand">
+            Marcas que atendemos
           </p>
-
-          <h2 className="text-balance text-4xl font-bold text-foreground md:text-5xl">
-            Servicio Especializado para las Marcas Más Utilizadas en Bolivia
+          <h2 className="text-balance text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
+            Especialistas en las marcas más usadas en Bolivia
           </h2>
-
-          <p className="mx-auto max-w-3xl text-xl text-foreground/70">
-            Contamos con experiencia en diagnóstico, mantenimiento y reparación
-            de vehículos japoneses, coreanos, americanos, europeos y de las
-            principales marcas chinas presentes en el mercado boliviano.
+          <p className="mx-auto max-w-3xl text-lg text-foreground/70 sm:text-xl">
+            Diagnóstico, mantenimiento y reparación de vehículos japoneses,
+            coreanos, americanos, europeos y de las principales marcas chinas.
           </p>
         </div>
 
-        <BrandSection
-          title="🇯🇵 Marcas Japonesas"
-          brands={japaneseBrands}
-          columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
-        />
-
-        <BrandSection
-          title="🇰🇷 Marcas Coreanas"
-          brands={koreanBrands}
-          columns="grid-cols-2 md:grid-cols-2 lg:grid-cols-4"
-        />
-
-        <BrandSection
-          title="🇺🇸 Marcas Americanas"
-          brands={americanBrands}
-          columns="grid-cols-2 md:grid-cols-2 lg:grid-cols-4"
-        />
-
-        <BrandSection
-          title="🇪🇺 Marcas Europeas"
-          brands={europeanBrands}
-          columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-        />
-
-        <BrandSection
-          title="🇨🇳 Marcas Chinas"
-          brands={chineseBrands}
-          columns="grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
-        />
+        <div className="space-y-10">
+          {groups.map((group) => (
+            <div key={group.title}>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-foreground/60">
+                {group.title}
+              </h3>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                {group.brands.map((brand) => (
+                  <BrandTile key={brand.name} brand={brand} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

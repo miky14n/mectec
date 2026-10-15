@@ -1,95 +1,85 @@
-"use client";
-
 import Image from "next/image";
+import { Check } from "lucide-react";
+import { SITE, whatsappLink } from "@/lib/site";
+
+const highlights = [
+  `Más de ${SITE.yearsExperience} años de experiencia profesional`,
+  "Especialista en diagnóstico automotriz y mantenimiento preventivo",
+  "Atención basada en evidencia técnica, no en cambios de piezas a prueba y error",
+  "Compromiso con la transparencia y el cuidado a largo plazo de tu vehículo",
+];
 
 export default function Founder() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background border-b border-border">
+    <section
+      id="founder"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-background"
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Image/Avatar */}
+        <div className="grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-12 items-center">
           <div className="flex justify-center">
-            <div className="relative w-64 h-64 rounded-lg bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center overflow-hidden">
+            <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-accent/10">
               <Image
                 src="/owner.jpeg"
                 fill
-                alt="owner"
-                className="object-cover"
+                sizes="(min-width: 768px) 384px, 100vw"
+                alt={`${SITE.founder}, fundador de ${SITE.name}`}
+                className="object-cover object-[center_35%]"
               />
             </div>
           </div>
 
-          {/* Content */}
           <div className="space-y-6">
-            <div className="space-y-4">
-              <p className="text-accent font-semibold text-sm uppercase tracking-wide">
-                Fundador de MECTEC
+            <div className="space-y-3">
+              <p className="text-brand font-semibold text-sm uppercase tracking-wide">
+                Fundador de {SITE.name}
               </p>
-
-              <h2 className="text-4xl font-bold text-foreground text-balance">
-                Rafael Marcelo Brun Ortiz
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
+                {SITE.founder}
               </h2>
-
-              <p className="text-lg text-accent font-semibold">
-                Especialista en Diagnóstico y Mantenimiento Automotriz
+              <p className="text-lg text-brand font-semibold">
+                Especialista en diagnóstico y mantenimiento automotriz
               </p>
             </div>
 
             <p className="text-lg text-foreground/70 leading-relaxed">
-              Con más de <strong>13 años de experiencia</strong> en el sector
-              automotriz, Rafael fundó MECTEC con una visión clara: ofrecer un
-              servicio diferente, donde el diagnóstico profesional, la
+              Con más de{" "}
+              <strong className="text-foreground">
+                {SITE.yearsExperience} años de experiencia
+              </strong>{" "}
+              en el sector automotriz, Rafael fundó {SITE.name} con una visión
+              clara: un servicio donde el diagnóstico profesional, la
               transparencia y la confianza sean la base de cada intervención.
             </p>
 
-            <p className="text-lg text-foreground/70 leading-relaxed">
-              Su filosofía de trabajo es simple:
-              <strong> "Sin diagnóstico, no hay reparación."</strong>
-              Cada recomendación se fundamenta en una evaluación técnica
-              precisa, evitando reemplazos innecesarios y ayudando a que cada
-              vehículo conserve su rendimiento y valor a largo plazo.
-            </p>
+            <blockquote className="border-l-4 border-accent pl-5 text-lg text-foreground/70 leading-relaxed">
+              <strong className="text-foreground">
+                “Sin diagnóstico, no hay reparación.”
+              </strong>{" "}
+              Cada recomendación se basa en una evaluación técnica precisa,
+              evitando reemplazos innecesarios para que tu vehículo conserve su
+              rendimiento y valor a largo plazo.
+            </blockquote>
 
-            <div className="space-y-3 pt-4">
-              <div className="flex gap-3">
-                <span className="text-accent">✓</span>
-                <p className="text-foreground">
-                  Más de 13 años de experiencia profesional
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <span className="text-accent">✓</span>
-                <p className="text-foreground">
-                  Especialista en diagnóstico automotriz y mantenimiento
-                  preventivo
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <span className="text-accent">✓</span>
-                <p className="text-foreground">
-                  Atención basada en evidencia técnica, no en reemplazos por
-                  prueba y error
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <span className="text-accent">✓</span>
-                <p className="text-foreground">
-                  Compromiso con la transparencia y el cuidado a largo plazo de
-                  tu vehículo
-                </p>
-              </div>
-            </div>
+            <ul className="space-y-3 pt-2">
+              {highlights.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <Check
+                    className="mt-0.5 h-5 w-5 flex-shrink-0 text-brand"
+                    aria-hidden="true"
+                  />
+                  <span className="text-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
 
             <a
-              href="https://wa.me/59177924302"
+              href={whatsappLink(`Hola ${SITE.founder.split(" ")[0]}, quiero hacer una consulta`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-8 py-3 mt-4 bg-accent text-accent-foreground font-semibold rounded hover:bg-accent/90 transition-colors"
+              className="inline-block px-8 py-3 mt-2 bg-accent text-accent-foreground font-semibold rounded hover:bg-accent/90 transition-colors"
             >
-              Contactar Directamente
+              Hablar con Rafael
             </a>
           </div>
         </div>

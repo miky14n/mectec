@@ -1,8 +1,7 @@
 import Navbar from "@/components/navbar";
 import Hero from "@/components/hero";
 import Stats from "@/components/stats";
-import WhyMectec from "@/components/why-mectec";
-import Guarantee from "@/components/guarantee";
+import WhyUs from "@/components/why-us";
 import Process from "@/components/process";
 import Services from "@/components/services";
 import Brands from "@/components/brands";
@@ -19,10 +18,9 @@ export default function Home() {
       <main className="bg-background">
         <Hero />
         <Stats />
-        <WhyMectec />
-
-        <Process />
+        <WhyUs />
         <Services />
+        <Process />
         <Brands />
         <Founder />
         <Testimonials />

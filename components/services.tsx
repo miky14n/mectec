@@ -1,114 +1,102 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowRight, Cog, Cpu, Search, Wrench } from "lucide-react";
+import { whatsappLink } from "@/lib/site";
 
 export default function Services() {
   const services = [
     {
-      title: "Diagnóstico Avanzado",
+      icon: Cpu,
+      title: "Diagnóstico computarizado",
       description:
-        "Diagnóstico computarizado completo antes de cualquier reparación. Sin diagnóstico, sin reparación garantizada.",
-      icon: "🔍",
+        "Escaneo electrónico completo y pruebas técnicas para encontrar la causa real de la falla antes de cualquier reparación.",
     },
     {
-      title: "Mantenimiento Preventivo",
+      icon: Wrench,
+      title: "Mantenimiento preventivo",
       description:
-        "Servicio integral de mantenimiento para mantener tu vehículo en óptimas condiciones.",
-      icon: "🔧",
+        "Cambio de aceite y filtros, frenos, suspensión y revisión general para evitar averías costosas.",
     },
     {
-      title: "Reparaciones Especializadas",
+      icon: Cog,
+      title: "Reparación especializada",
       description:
-        "Reparación de motor, transmisión, sistemas eléctricos y más con herramientas profesionales.",
-      icon: "⚙️",
+        "Motor, transmisión, sistema eléctrico y más, con herramientas profesionales y repuestos de calidad.",
     },
     {
-      title: "Cero Costos Ocultos",
+      icon: Search,
+      title: "Inspección antes de comprar",
       description:
-        "Presupuesto transparente, sin sorpresas. Lo que ves es lo que pagas.",
-      icon: "💯",
+        "Evaluamos mecánica y electrónicamente el vehículo que quieres comprar y te entregamos un informe claro.",
     },
   ];
 
   return (
     <section
       id="services"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-background border-b border-border"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-card/40 border-y border-border"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
-          <p className="text-accent font-semibold text-sm uppercase tracking-wide">
-            Nuestros Servicios Técnicos
+          <p className="text-brand font-semibold text-sm uppercase tracking-wide">
+            Servicios
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance">
-            Reparación y Mantenimiento Profesional
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground text-balance">
+            Reparación y mantenimiento profesional
           </h2>
-          <p className="text-xl text-foreground/70 max-w-2xl mx-auto text-balance">
-            Servicio especializado de diagnóstico, reparación y mantenimiento
-            para todos los vehículos, con transparencia y garantía.
+          <p className="text-lg sm:text-xl text-foreground/70 max-w-2xl mx-auto text-balance">
+            Diagnóstico, reparación y mantenimiento para todas las marcas, con
+            transparencia en cada paso.
           </p>
         </div>
 
         <motion.div
-          className="grid md:grid-cols-3 gap-8"
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={{
             hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.1,
-              },
-            },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
           }}
         >
-          {services.map((service, index) => (
-            <motion.div
-              key={index}
-              className="p-8 border border-border rounded-lg hover:border-accent/50 transition-all hover:shadow-lg group"
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.6 },
-                },
-              }}
-              whileHover={{
-                translateY: -8,
-                boxShadow: "0 20px 40px rgba(37, 99, 235, 0.1)",
-              }}
-            >
-              <motion.div
-                className="text-4xl mb-4"
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                transition={{ type: "spring", stiffness: 200 }}
+          {services.map((service) => {
+            const Icon = service.icon;
+            return (
+              <motion.a
+                key={service.title}
+                href={whatsappLink(
+                  `Hola, quiero información sobre: ${service.title}`,
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col p-7 bg-card border border-border rounded-xl hover:border-accent/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-accent/10 transition-all duration-300"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+                }}
               >
-                {service.icon}
-              </motion.div>
-              <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-accent transition-colors">
-                {service.title}
-              </h3>
-              <p className="text-foreground/60 leading-relaxed">
-                {service.description}
-              </p>
-            </motion.div>
-          ))}
+                <span className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent/15 text-brand">
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                </span>
+                <h3 className="text-lg font-semibold text-foreground mb-3 group-hover:text-brand transition-colors">
+                  {service.title}
+                </h3>
+                <p className="text-foreground/60 leading-relaxed flex-1">
+                  {service.description}
+                </p>
+                <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-brand">
+                  Consultar
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </span>
+              </motion.a>
+            );
+          })}
         </motion.div>
-
-        {/* CTA */}
-        <div className="mt-16 text-center">
-          <a
-            href="https://wa.me/59177924302"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-8 py-3 bg-accent text-accent-foreground font-semibold rounded hover:bg-accent/90 transition-colors inline-block"
-          >
-            Más Información
-          </a>
-        </div>
       </div>
     </section>
   );
