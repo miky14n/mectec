@@ -13,3 +13,23 @@ __v0_jsx-dev-runtime.ts
 node_modules
 .next/
 .DS_Store
+
+# Local AI/developer workspace and disposable verification artifacts
+/.local/
+/tmp/
+/test-results/
+/playwright-report/
+/coverage/
+/screenshots/
+/traces/
+
+# Generated logs and local database files
+*.log
+*.sqlite
+*.sqlite3
+*.db
+/tsconfig.tsbuildinfo
+
+# Local copies of client documents and generated test exports
+/resources-private/
+/generated-reports/
