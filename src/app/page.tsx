@@ -4,18 +4,24 @@ import Link from "next/link";
 import {
   ArrowDownRight,
   ArrowRight,
+  CheckCircle2,
   Clock3,
-  Mail,
+  Cpu,
+  Layers,
   MapPin,
   Menu,
   MessageCircle,
   PackageSearch,
   Phone,
-  Shield,
   ShieldCheck,
+  Sparkles,
   Wrench,
+  Zap,
 } from "lucide-react";
-import { BlindGuardEmblem, RangeInsignia } from "@/components/blindguard/blindguard-insignias";
+import {
+  BlindGuardEmblem,
+  RangeInsignia,
+} from "@/components/blindguard/blindguard-insignias";
 import { RANGE_STYLES } from "@/components/blindguard/data";
 import { SITE, whatsappLink } from "@/config/site";
 import {
@@ -30,7 +36,13 @@ import {
 } from "@/config/homepage";
 
 const container = "mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10";
-const rangeColorKey = { D: "silver", C: "blue", B: "amber", A: "green", S: "red" } as const;
+const rangeColorKey = {
+  D: "silver",
+  C: "blue",
+  B: "amber",
+  A: "green",
+  S: "red",
+} as const;
 
 const title = `${SITE.name} | Cochabamba`;
 const description =
@@ -53,126 +65,881 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#060E1A]/95 backdrop-blur-xl">
-        <div className={`${container} flex min-h-16 items-center justify-between gap-3`}>
-          <Link href="/" aria-label="Brun Grupo Motriz, inicio" className="flex shrink-0 items-center gap-2.5">
-            <Image src="/brun-pwa-icon.svg" width={40} height={40} alt="" priority className="size-9 rounded-lg sm:size-10" />
-            <span className="text-sm font-bold tracking-tight sm:text-base">{SITE.name}</span>
+      {/* HEADER DE ALTA GAMA */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#060E1A]/85 backdrop-blur-2xl">
+        <div
+          className={`${container} flex h-20 items-center justify-between gap-4`}
+        >
+          <Link
+            href="/"
+            aria-label="Brun Grupo Motriz, inicio"
+            className="group flex items-center gap-3"
+          >
+            <div className="relative flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400/20 via-blue-600/10 to-transparent border border-sky-400/30 shadow-inner group-hover:border-sky-400 transition-all">
+              <Image
+                src="/brun-pwa-icon.svg"
+                width={32}
+                height={32}
+                alt=""
+                priority
+                className="size-7 rounded-xl"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-base font-black tracking-tight text-white group-hover:text-sky-300 transition-colors">
+                {SITE.name}
+              </span>
+              <span className="text-[10px] font-mono font-bold tracking-widest text-sky-400 uppercase">
+                Grupo Motriz · Cochabamba
+              </span>
+            </div>
           </Link>
-          <nav aria-label="Navegación principal" className="hidden items-center gap-5 lg:flex xl:gap-7">
-            {HOME_NAVIGATION.map((item) => <Link key={item.href} href={item.href} className="whitespace-nowrap text-sm text-white/65 transition hover:text-white">{item.label}</Link>)}
-            <button type="button" disabled aria-disabled="true" title={HOME_COPY.menuLoginTitle} className="cursor-not-allowed whitespace-nowrap text-sm text-white/35">{HOME_COPY.menuLogin}</button>
+
+          <nav
+            aria-label="Navegación principal"
+            className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.02] p-1.5 lg:flex backdrop-blur-md"
+          >
+            {HOME_NAVIGATION.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wider text-slate-300 transition-all hover:bg-white/10 hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
-          <div className="flex shrink-0 items-center gap-2">
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-accent px-3 text-xs font-semibold text-accent-foreground transition hover:bg-accent/90 sm:px-4 sm:text-sm"><MessageCircle aria-hidden="true" className="size-4" /><span className="hidden sm:inline">Agendar servicio</span><span className="sm:hidden">Agendar</span></a>
+
+          <div className="flex items-center gap-3">
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-400 to-blue-500 px-5 text-xs font-bold text-slate-950 shadow-lg shadow-sky-500/25 transition-all hover:brightness-110 active:scale-95"
+            >
+              <MessageCircle aria-hidden="true" className="size-4" />
+              <span>Agendar Cita</span>
+            </a>
+
             <details className="group relative lg:hidden">
-              <summary aria-label={HOME_COPY.menuOpen} className="grid size-10 cursor-pointer list-none place-items-center rounded-lg border border-white/15 text-white [&::-webkit-details-marker]:hidden"><Menu aria-hidden="true" className="size-5 group-open:hidden" /><span className="hidden text-xl leading-none group-open:inline" aria-hidden="true">×</span><span className="sr-only group-open:hidden">{HOME_COPY.menuOpen}</span><span className="sr-only hidden group-open:inline">{HOME_COPY.menuClose}</span></summary>
-              <nav aria-label="Navegación móvil" className="absolute right-0 top-12 z-50 w-[min(18rem,calc(100vw-2.5rem))] rounded-xl border border-white/10 bg-[#0D1627] p-2 shadow-2xl">
-                {HOME_NAVIGATION.map((item) => <Link key={item.href} href={item.href} className="block rounded-lg px-4 py-3 text-sm text-white/80 hover:bg-white/5 hover:text-white">{item.label}</Link>)}
-                <button type="button" disabled aria-disabled="true" title={HOME_COPY.menuLoginTitle} className="w-full cursor-not-allowed rounded-lg px-4 py-3 text-left text-sm text-white/35">{HOME_COPY.menuLoginStage}</button>
+              <summary
+                aria-label={HOME_COPY.menuOpen}
+                className="grid size-11 cursor-pointer list-none place-items-center rounded-xl border border-white/15 bg-white/[0.04] text-white [&::-webkit-details-marker]:hidden"
+              >
+                <Menu aria-hidden="true" className="size-5 group-open:hidden" />
+                <span
+                  className="hidden text-xl font-bold leading-none group-open:inline"
+                  aria-hidden="true"
+                >
+                  ×
+                </span>
+              </summary>
+              <nav
+                aria-label="Navegación móvil"
+                className="absolute right-0 top-14 z-50 w-64 rounded-2xl border border-white/15 bg-[#0D1627]/95 p-3 shadow-2xl backdrop-blur-2xl"
+              >
+                <div className="flex flex-col gap-1">
+                  {HOME_NAVIGATION.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/10 hover:text-white"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
               </nav>
             </details>
           </div>
         </div>
       </header>
 
-      <main>
-        <section id="inicio" className="relative isolate overflow-hidden border-b border-white/10">
-          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_35%,rgba(37,99,235,.2),transparent_40%),radial-gradient(ellipse_at_5%_80%,rgba(14,165,233,.1),transparent_35%),linear-gradient(135deg,#060E1A_20%,#09172a_55%,#060E1A)]" />
-          <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-[.1] [background-image:linear-gradient(rgba(148,163,184,.16)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.16)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]" />
-          <div className={`${container} grid min-h-[650px] items-center gap-10 py-16 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:py-24`}>
-            <div className="relative z-10 max-w-2xl">
-              <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-300/20 bg-blue-300/[.06] px-3 py-2 text-xs font-bold uppercase tracking-[.16em] text-blue-200"><span className="size-1.5 rounded-full bg-blue-300 shadow-[0_0_12px_#7dd3fc]" />{SITE.city}, {SITE.country} <span className="text-white/30">/</span> {HOME_COPY.heroEyebrow}</p>
-              <h1 className="max-w-3xl text-5xl font-black leading-[1.02] tracking-[-.05em] text-white sm:text-6xl lg:text-7xl">Brun Grupo Motriz<span className="text-corporate-cyan">.</span></h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">{HOME_COPY.heroExperience}</p>
-              <p className="mt-5 max-w-2xl text-xs font-bold leading-6 tracking-[.12em] text-white/75 sm:text-sm">{HOME_BRAND_LINE}</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a href="#servicios" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-blue-400 px-6 font-bold text-slate-950 shadow-[0_10px_40px_rgba(56,189,248,.15)] transition hover:-translate-y-0.5 hover:bg-blue-300">{HOME_COPY.heroServicesAction}<ArrowDownRight aria-hidden="true" className="size-4" /></a>
-                <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[.025] px-6 font-semibold text-white transition hover:border-white/50 hover:bg-white/5"><MessageCircle aria-hidden="true" className="size-4" />{HOME_COPY.heroWhatsAppAction}</a>
+      <main className="overflow-hidden">
+        {/* HERO REEQUILIBRADO CON NAVEGACIÓN DIRECTA A LOS 3 SERVICIOS */}
+        <section
+          id="inicio"
+          className="relative isolate pt-12 pb-20 sm:pt-20 sm:pb-32"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,rgba(56,189,248,0.15),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(37,99,235,0.12),transparent_40%),linear-gradient(to_bottom,#060E1A,#080f1b)]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 opacity-20 [background-image:radial-gradient(rgba(56,189,248,0.2)_1px,transparent_1px)] [background-size:32px_32px]"
+          />
+
+          <div
+            className={`${container} grid items-center gap-12 lg:grid-cols-12 lg:gap-8`}
+          >
+            {/* Mensaje Principal */}
+            <div className="relative z-10 lg:col-span-7">
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-sky-400/20 bg-sky-500/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-sky-300 shadow-sm backdrop-blur-md">
+                <span className="size-2 rounded-full bg-sky-400 animate-pulse" />
+                {SITE.city}, {SITE.country}{" "}
+                <span className="text-white/20">/</span> {HOME_COPY.heroEyebrow}
               </div>
-              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/15 pt-6 text-sm text-slate-300"><span><strong className="text-xl text-white">+13</strong> años de experiencia</span><span className="hidden h-5 w-px bg-white/20 sm:block" aria-hidden="true" /><span>Atención multimarca</span><span className="hidden h-5 w-px bg-white/20 sm:block" aria-hidden="true" /><span>Cochabamba, Bolivia</span></div>
-            </div>
-            <div className="relative mx-auto flex min-h-[340px] w-full max-w-lg items-center justify-center sm:min-h-[440px]">
-              <div aria-hidden="true" className="absolute size-48 rounded-full bg-blue-500/15 blur-[80px] sm:size-72" /><div aria-hidden="true" className="absolute size-64 rounded-full border border-sky-200/[.08] sm:size-80" /><div aria-hidden="true" className="absolute size-52 rounded-full border border-dashed border-sky-100/[.12] sm:size-64" />
-              <div className="relative flex size-56 items-center justify-center rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[.09] to-white/[.015] shadow-[0_30px_100px_rgba(0,0,0,.35)] sm:size-72"><div aria-hidden="true" className="absolute inset-3 rounded-[1.5rem] border border-white/[.08]" /><Image src="/brun-pwa-icon.svg" width={180} height={180} alt="Símbolo de Brun Grupo Motriz" priority className="relative size-36 drop-shadow-[0_0_50px_rgba(59,130,246,.35)] sm:size-44" /><span aria-hidden="true" className="absolute -right-3 top-8 grid size-12 place-items-center rounded-2xl border border-sky-200/20 bg-[#0a1424] text-sky-200 shadow-xl"><Wrench className="size-5" /></span><span aria-hidden="true" className="absolute -bottom-3 -left-3 grid size-12 place-items-center rounded-2xl border border-blue-200/20 bg-[#0a1424] text-blue-200 shadow-xl"><Shield className="size-5" /></span></div>
-              <div className="absolute bottom-2 right-0 rounded-xl border border-white/10 bg-[#0a1424]/90 px-4 py-3 shadow-xl backdrop-blur sm:bottom-5"><p className="text-xs font-semibold text-white">{SITE.name}</p><p className="mt-1 text-[11px] text-slate-400">{SITE.city} · {SITE.country}</p></div>
-            </div>
-          </div>
-        </section>
 
-        <section id="servicios" className="scroll-mt-20 py-20 sm:py-28">
-          <div className={container}>
-            <div className="mb-10 flex flex-col justify-between gap-4 sm:mb-12 sm:flex-row sm:items-end"><div><p className="text-xs font-bold uppercase tracking-[.2em] text-blue-300">{HOME_COPY.servicesEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">{HOME_COPY.servicesTitle}</h2></div><p className="max-w-md text-sm leading-6 text-white/55">{HOME_BRAND_LINE}</p></div>
-            <div className="grid gap-4 md:grid-cols-3">
-              {HOME_SERVICES.map((service, index) => {
-                const Icon = [Wrench, ShieldCheck, PackageSearch][index];
-                return <Link key={service.href} href={service.href} className="group relative flex min-h-80 flex-col overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#111d30] to-[#0a1321] p-6 transition-all hover:-translate-y-1 hover:border-sky-200/35 hover:shadow-[0_24px_80px_rgba(0,0,0,.25)] sm:p-7"><span aria-hidden="true" className="absolute -right-12 -top-12 size-40 rounded-full bg-blue-400/10 blur-3xl transition group-hover:bg-blue-300/20" /><div className="relative flex items-center justify-between"><span className="text-xs font-bold tracking-[.18em] text-sky-200">0{index + 1}</span><span className="grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[.04] text-sky-200"><Icon aria-hidden="true" className="size-5" /></span></div><h3 className="relative mt-9 text-xl font-bold leading-snug text-white">{service.title}</h3><p className="relative mt-3 flex-1 text-sm leading-6 text-slate-300/75">{service.description}</p><span className="relative mt-7 inline-flex items-center gap-2 border-t border-white/10 pt-5 text-sm font-semibold text-white">{service.action}<ArrowRight aria-hidden="true" className="size-4 transition group-hover:translate-x-1" /></span></Link>;
-              })}
-            </div>
-          </div>
-        </section>
+              <h1 className="mt-6 text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-[1.08]">
+                Tu camino merece <br />
+                <span className="bg-gradient-to-r from-sky-300 via-sky-400 to-blue-500 bg-clip-text text-transparent">
+                  un buen respaldo.
+                </span>
+              </h1>
 
-        <section id="asesoria-compra" className="scroll-mt-20 pb-20 sm:pb-28">
-          <div className={container}>
-            <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
-              <div className="text-white">
-                <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.2em] text-sky-300"><ShieldCheck aria-hidden="true" className="size-4" />Asesoría de compra</p>
-                <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Compra tu próximo vehículo con seguridad</h2>
-                <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">Inspeccionamos el vehículo antes de que inviertas tu dinero para ayudarte a tomar una decisión informada.</p>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <a href={whatsappLink("Hola, quiero agendar una inspección antes de comprar un vehículo")} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-sky-400 px-6 font-bold text-slate-950 transition hover:bg-sky-300"><MessageCircle aria-hidden="true" className="size-4" />Solicitar una inspección</a>
-                  <Link href="/mectec#process" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[.025] px-6 font-semibold text-white transition hover:border-white/50 hover:bg-white/5">Conocer el proceso<ArrowRight aria-hidden="true" className="size-4" /></Link>
+              <p className="mt-6 text-lg text-slate-300 sm:text-xl font-normal leading-relaxed max-w-2xl">
+                <strong className="font-semibold text-white">
+                  {SITE.name}.
+                </strong>{" "}
+                Soluciones integrales para tu vehículo: taller mecánico
+                especializado, garantía extendida BlindGuard y catálogo digital
+                de repuestos[cite: 8].
+              </p>
+
+              <div className="mt-4 flex items-center gap-2 text-xs font-semibold tracking-wider text-sky-400/90 uppercase">
+                {HOME_BRAND_LINE}
+              </div>
+
+              <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <a
+                  href="#ecosistema"
+                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-sky-400 px-7 text-base font-bold text-slate-950 shadow-xl shadow-sky-400/20 transition-all hover:-translate-y-0.5 hover:bg-sky-300 active:scale-[0.98]"
+                >
+                  Explorar servicios
+                  <ArrowDownRight aria-hidden="true" className="size-5" />
+                </a>
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl border border-white/15 bg-white/[0.03] px-7 text-base font-semibold text-white transition-all hover:bg-white/10 hover:border-white/30 active:scale-[0.98]"
+                >
+                  <MessageCircle
+                    aria-hidden="true"
+                    className="size-5 text-sky-400"
+                  />
+                  {HOME_COPY.heroWhatsAppAction}
+                </a>
+              </div>
+
+              <div className="mt-12 grid grid-cols-3 gap-6 border-t border-white/10 pt-8 max-w-lg">
+                <div>
+                  <p className="text-2xl sm:text-3xl font-black text-white">
+                    +6
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Años de experiencia
+                  </p>
+                </div>
+                <div className="border-l border-white/10 pl-6">
+                  <p className="text-2xl sm:text-3xl font-black text-white">
+                    100%
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Atención multimarca
+                  </p>
+                </div>
+                <div className="border-l border-white/10 pl-6">
+                  <p className="text-2xl sm:text-3xl font-black text-white">
+                    Top
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Cochabamba, Bolivia
+                  </p>
                 </div>
               </div>
-              <div className="rounded-3xl border border-sky-200/15 bg-gradient-to-br from-[#102442] via-[#0b1729] to-[#0b111d] p-6 text-white shadow-[0_30px_100px_rgba(0,0,0,.3)] sm:p-8">
-                <p className="text-xs font-semibold uppercase tracking-[.16em] text-sky-200">Antes de cerrar el trato</p>
-                <ol className="mt-6 divide-y divide-white/15">
-                  <li className="flex gap-4 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full border border-corporate-cyan/40 text-sm font-bold text-corporate-cyan">01</span><div><h3 className="font-semibold">Cuéntanos y coordinamos</h3><p className="mt-1 text-sm leading-6 text-slate-200">Comparte los datos del vehículo y acordamos la inspección con el propietario.</p></div></li>
-                  <li className="flex gap-4 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full border border-corporate-cyan/40 text-sm font-bold text-corporate-cyan">02</span><div><h3 className="font-semibold">Revisamos el vehículo</h3><p className="mt-1 text-sm leading-6 text-slate-200">Evaluamos sus sistemas mecánicos y electrónicos, con diagnóstico computarizado cuando corresponde.</p></div></li>
-                  <li className="flex gap-4 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full border border-corporate-cyan/40 text-sm font-bold text-corporate-cyan">03</span><div><h3 className="font-semibold">Decide con información</h3><p className="mt-1 text-sm leading-6 text-slate-200">Recibe un informe técnico y asesoría para negociar o decidir si te conviene comprar.</p></div></li>
+            </div>
+
+            {/* PANEL TRIPLE: ACCESO RÁPIDO A LOS 3 SERVICIOS PRINCIPALES */}
+            <div className="relative lg:col-span-5">
+              <div
+                aria-hidden="true"
+                className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-sky-500/20 via-blue-600/10 to-transparent blur-2xl -z-10"
+              />
+
+              <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-[#0A1322]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center justify-between border-b border-white/10 pb-5">
+                  <div className="flex items-center gap-3">
+                    <span className="relative flex size-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold tracking-widest text-sky-300 uppercase">
+                        Servicios Activos
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        Cochabamba · Circunvalación
+                      </span>
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-sky-400/20 bg-sky-500/10 px-2.5 py-1 text-[11px] font-mono font-semibold text-sky-300">
+                    Brun Grupo Motriz
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-3">
+                  {/*Opción 1: Taller Mecánico */}
+                  <a
+                    href="/mectec"
+                    className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-sky-400/40 hover:bg-sky-500/[0.06]"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="grid size-11 place-items-center rounded-xl bg-sky-500/10 text-sky-400 border border-sky-400/20 group-hover:bg-sky-400 group-hover:text-slate-950 transition-colors">
+                        <Wrench className="size-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">
+                          1. Taller Mecánico Especializado
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          Diagnóstico computarizado previo[cite: 8]
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
+                  </a>
+
+                  {/* Opción 2: BlindGuard */}
+                  <a
+                    href="/blindguard"
+                    className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-sky-400/40 hover:bg-sky-500/[0.06]"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="grid size-11 place-items-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-400/20 group-hover:bg-sky-400 group-hover:text-slate-950 transition-colors">
+                        <ShieldCheck className="size-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">
+                          2. Garantía Extendida BlindGuard
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          Protección por Rangos D a S[cite: 8]
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
+                  </a>
+
+                  {/* Opción 3: Catálogo de Repuestos */}
+                  <a
+                    href="/repuestos"
+                    className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-sky-400/40 hover:bg-sky-500/[0.06]"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="grid size-11 place-items-center rounded-xl bg-sky-400/10 text-sky-300 border border-sky-400/20 group-hover:bg-sky-400 group-hover:text-slate-950 transition-colors">
+                        <PackageSearch className="size-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">
+                          3. Venta de Repuestos
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          Catálogo digital para consultar y descargar[cite: 8]
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
+                  </a>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="size-3.5 text-sky-400" /> Frente al
+                    Hipermaxi
+                  </span>
+                  <span className="font-mono text-slate-400">Lun-Sáb</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECCIÓN ECOSISTEMA BRUN: LAS 3 UNIDADES DE NEGOCIO EN IGUALDAD DE CONDICIONES */}
+        <section
+          id="ecosistema"
+          className="scroll-mt-20 py-24 border-t border-white/10 bg-[#060E1A]"
+        >
+          <div className={container}>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
+                Ecosistema Brun Grupo Motriz
+              </span>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-5xl">
+                Tres áreas creadas para cuidar tu auto
+              </h2>
+              <p className="mt-4 text-base text-slate-300">
+                Acompañamos cada etapa de tu vehículo con servicios técnicos,
+                garantías y componentes de alta calidad.
+              </p>
+            </div>
+
+            <div className="grid gap-8 lg:grid-cols-3">
+              {/* Card 1: Taller */}
+              <div className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-[#102038] to-[#0a1322] p-8 transition hover:border-sky-400/50 hover:shadow-2xl">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="grid size-14 place-items-center rounded-2xl bg-sky-400/10 border border-sky-400/20 text-sky-400">
+                      <Wrench className="size-7" />
+                    </span>
+                    <span className="text-xs font-mono font-bold text-sky-400">
+                      01 / TALLER
+                    </span>
+                  </div>
+                  <h3 className="mt-6 text-2xl font-bold text-white">
+                    Servicio Mecánico y Mantenimiento
+                  </h3>
+                  <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                    Diagnóstico computarizado previo, mantenimiento preventivo,
+                    reparaciones especializadas e inspección técnica
+                    pre-compra[cite: 8].
+                  </p>
+                </div>
+                <div className="mt-8 border-t border-white/10 pt-6">
+                  <Link
+                    href="/mectec"
+                    className="inline-flex items-center gap-2 font-bold text-sky-400 hover:text-sky-300"
+                  >
+                    Conocer el taller <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Card 2: BlindGuard */}
+              <div className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-[#102038] to-[#0a1322] p-8 transition hover:border-sky-400/50 hover:shadow-2xl">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="grid size-14 place-items-center rounded-2xl bg-sky-400/10 border border-sky-400/20 text-sky-400">
+                      <ShieldCheck className="size-7" />
+                    </span>
+                    <span className="text-xs font-mono font-bold text-sky-400">
+                      02 / GARANTÍA
+                    </span>
+                  </div>
+                  <h3 className="mt-6 text-2xl font-bold text-white">
+                    BlindGuard (Garantía Extendida)
+                  </h3>
+                  <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                    Protege sistemas mecánicos, eléctricos y electrónicos
+                    devolviendo la garantía de fábrica cuando el auto acumula
+                    años o kilometraje[cite: 8].
+                  </p>
+                </div>
+                <div className="mt-8 border-t border-white/10 pt-6">
+                  <Link
+                    href="/blindguard"
+                    className="inline-flex items-center gap-2 font-bold text-sky-400 hover:text-sky-300"
+                  >
+                    Conocer BlindGuard <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Card 3: Repuestos */}
+              <div className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-b from-[#102038] to-[#0a1322] p-8 transition hover:border-sky-400/50 hover:shadow-2xl">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="grid size-14 place-items-center rounded-2xl bg-sky-400/10 border border-sky-400/20 text-sky-400">
+                      <PackageSearch className="size-7" />
+                    </span>
+                    <span className="text-xs font-mono font-bold text-sky-400">
+                      03 / REPUESTOS
+                    </span>
+                  </div>
+                  <h3 className="mt-6 text-2xl font-bold text-white">
+                    Catálogo Digital de Repuestos
+                  </h3>
+                  <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                    Consulta componentes, filtros, lubricantes y repuestos
+                    garantizados directamente desde nuestro catálogo digital
+                    para descargar[cite: 8].
+                  </p>
+                </div>
+                <div className="mt-8 border-t border-white/10 pt-6">
+                  <Link
+                    href="/repuestos"
+                    className="inline-flex items-center gap-2 font-bold text-sky-400 hover:text-sky-300"
+                  >
+                    Ver repuestos <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECCIÓN: FILOSOFÍA DE TALLER (MANTENIMIENTO PREVENTIVO) */}
+        <section className="relative overflow-hidden border-y border-white/10 bg-[#080F1B] py-28">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_left,rgba(14,165,233,0.1),transparent_50%)]"
+          />
+
+          <div className={container}>
+            <div className="grid lg:grid-cols-12 gap-16 items-center">
+              <div className="lg:col-span-6">
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-widest">
+                  <Sparkles className="size-4" /> Filosofía de taller
+                </div>
+                <h2 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl leading-tight">
+                  ¿Por qué priorizamos el mantenimiento preventivo?
+                </h2>
+                <p className="mt-6 text-base text-slate-300 leading-relaxed">
+                  En <strong className="text-white">{SITE.name}</strong> creemos
+                  firmemente que la mejor reparación es la que se evita.
+                  Anticiparse a los desgastes mecánicos garantiza tu seguridad
+                  en ruta y protege tu inversión a largo plazo.
+                </p>
+
+                <div className="mt-8 space-y-4">
+                  <div className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                    <CheckCircle2 className="size-5 text-sky-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-bold text-white text-sm">
+                        Ahorro financiero real
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Cambiar un componente a tiempo evita daños colaterales
+                        costosos en el motor o transmisión.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                    <CheckCircle2 className="size-5 text-sky-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-bold text-white text-sm">
+                        Cero sorpresas en carretera
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Viaja por Bolivia con absoluta tranquilidad sabiendo que
+                        cada sistema ha sido escaneado y verificado.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* TARJETA COMPARATIVA VISUAL */}
+              <div className="lg:col-span-6 grid sm:grid-cols-2 gap-6">
+                <div className="rounded-3xl border border-sky-400/30 bg-gradient-to-b from-[#102442] to-[#0b1729] p-8 shadow-2xl relative">
+                  <span className="absolute top-6 right-6 rounded-full bg-sky-400/20 p-2 text-sky-300">
+                    <Zap className="size-5" />
+                  </span>
+                  <span className="text-xs font-mono font-bold text-sky-300 uppercase tracking-widest">
+                    Preventivo
+                  </span>
+                  <h3 className="mt-3 text-2xl font-bold text-white">
+                    Inteligente
+                  </h3>
+                  <ul className="mt-6 space-y-3 text-xs text-slate-300 font-medium">
+                    <li className="flex items-center gap-2">
+                      ✓ Revisiones periódicas
+                    </li>
+                    <li className="flex items-center gap-2">
+                      ✓ Cambios de fluidos exactos
+                    </li>
+                    <li className="flex items-center gap-2">
+                      ✓ Máxima eficiencia de combustible
+                    </li>
+                    <li className="flex items-center gap-2">
+                      ✓ Mayor vida útil del motor
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="rounded-3xl border border-white/10 bg-[#060E1A]/80 p-8 relative opacity-75">
+                  <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest">
+                    Reactivo
+                  </span>
+                  <h3 className="mt-3 text-2xl font-bold text-slate-400">
+                    Imprevisto
+                  </h3>
+                  <ul className="mt-6 space-y-3 text-xs text-slate-500 font-medium">
+                    <li className="flex items-center gap-2">
+                      ✕ Daño sorpresivo en ruta
+                    </li>
+                    <li className="flex items-center gap-2">
+                      ✕ Costos de grúa y rescate
+                    </li>
+                    <li className="flex items-center gap-2">
+                      ✕ Reparaciones mayores complejas
+                    </li>
+                    <li className="flex items-center gap-2">
+                      ✕ Inmovilización prolongada
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ASESORÍA DE COMPRA */}
+        <section
+          id="asesoria-compra"
+          className="scroll-mt-20 border-t border-white/10 bg-[#080F1B] py-28"
+        >
+          <div className={container}>
+            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-widest">
+                  <ShieldCheck aria-hidden="true" className="size-4" /> Asesoría
+                  y Peritaje
+                </div>
+                <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
+                  Inspección técnica antes de comprar tu vehículo
+                </h2>
+                <p className="mt-5 text-base text-slate-300 leading-relaxed">
+                  Evaluamos los sistemas mecánicos, electrónicos y estructurales
+                  para que inviertas tu dinero con total seguridad y datos
+                  reales.
+                </p>
+
+                <div className="mt-8">
+                  <a
+                    href={whatsappLink(
+                      "Hola, quiero agendar una inspección antes de comprar un vehículo",
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-sky-400 px-8 font-bold text-slate-950 transition hover:bg-sky-300 shadow-lg shadow-sky-400/20"
+                  >
+                    <MessageCircle aria-hidden="true" className="size-5" />{" "}
+                    Solicitar inspección pre-compra
+                  </a>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-sky-400/20 bg-gradient-to-br from-[#102442] via-[#0b1729] to-[#0b111d] p-8 shadow-2xl">
+                <p className="text-xs font-mono font-bold uppercase tracking-widest text-sky-300">
+                  Proceso en 3 pasos
+                </p>
+                <ol className="mt-6 divide-y divide-white/10">
+                  <li className="flex gap-4 py-4">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-sky-400/10 border border-sky-400/30 text-sm font-bold text-sky-400 font-mono">
+                      01
+                    </span>
+                    <div>
+                      <h3 className="font-bold text-white">Coordinación</h3>
+                      <p className="mt-1 text-sm text-slate-300">
+                        Nos contactas y agendamos con el propietario actual.
+                      </p>
+                    </div>
+                  </li>
+                  <li className="flex gap-4 py-4">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-sky-400/10 border border-sky-400/30 text-sm font-bold text-sky-400 font-mono">
+                      02
+                    </span>
+                    <div>
+                      <h3 className="font-bold text-white">
+                        Escaneo y Revisión
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-300">
+                        Evaluación computarizada exhaustiva de componentes
+                        críticos.
+                      </p>
+                    </div>
+                  </li>
+                  <li className="flex gap-4 py-4">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-sky-400/10 border border-sky-400/30 text-sm font-bold text-sky-400 font-mono">
+                      03
+                    </span>
+                    <div>
+                      <h3 className="font-bold text-white">Informe Técnico</h3>
+                      <p className="mt-1 text-sm text-slate-300">
+                        Recibe datos precisos para decidir tu compra con
+                        respaldo.
+                      </p>
+                    </div>
+                  </li>
                 </ol>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="blindguard" className="relative isolate scroll-mt-20 overflow-hidden border-y border-white/10 bg-[#080f1b] py-20 sm:py-28">
-          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_15%_50%,rgba(14,165,233,.1),transparent_38%),radial-gradient(ellipse_at_85%_30%,rgba(37,99,235,.15),transparent_40%)]" />
-          <div className={`${container} grid items-center gap-12 lg:grid-cols-[1fr_1fr]`}>
-            <div><p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.2em] text-sky-300"><ShieldCheck aria-hidden="true" className="size-4" />{HOME_COPY.blindGuardProtection}</p><h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">{HOME_BLINDGUARD.title}</h2><p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">{HOME_BLINDGUARD.description}</p><div className="mt-8 flex flex-col gap-3 sm:flex-row"><Link href="/blindguard" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-sky-400 px-6 font-bold text-slate-950 transition hover:bg-sky-300">{HOME_BLINDGUARD.primaryAction}<ArrowRight aria-hidden="true" className="size-4" /></Link><a href={whatsappLink(HOME_BLINDGUARD.whatsappMessage)} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[.025] px-6 font-semibold text-white transition hover:border-white/50 hover:bg-white/5"><MessageCircle aria-hidden="true" className="size-4" />{HOME_BLINDGUARD.secondaryAction}</a></div></div>
-            <div className="relative mx-auto w-full max-w-xl rounded-3xl border border-sky-200/15 bg-gradient-to-br from-[#102442] via-[#0b1729] to-[#0b111d] p-5 shadow-[0_30px_100px_rgba(0,0,0,.3)] sm:p-8"><div aria-hidden="true" className="absolute -right-10 -top-12 size-48 rounded-full bg-blue-500/15 blur-[70px]" /><div className="relative flex items-center justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[.16em] text-sky-200">{HOME_COPY.blindGuardName}</p><p className="mt-1 text-sm text-white/55">{HOME_BLINDGUARD.title}</p></div><BlindGuardEmblem className="size-16 shrink-0 sm:size-20" /></div><div className="relative mt-5 grid grid-cols-5 gap-1.5 sm:gap-3" aria-label="Insignias de rango D, C, B, A y S">{HOME_BLINDGUARD.ranges.map((range) => { const style = RANGE_STYLES[rangeColorKey[range as keyof typeof rangeColorKey]]; return <div key={range} className={`group grid aspect-[1.1/1] min-w-0 place-items-center overflow-hidden rounded-xl border bg-[#060E1A]/70 ${style.border}`}><RangeInsignia letter={range} color={style.icon} accentColor={range === "S" ? "#fbbf24" : undefined} className="h-16 w-[4.75rem] sm:h-20 sm:w-24" /></div>; })}</div></div>
+        {/* DETALLE BLINDGUARD */}
+        <section
+          id="blindguard"
+          className="relative isolate scroll-mt-20 border-y border-white/10 bg-[#060E1A] py-28 sm:py-36"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_right,rgba(14,165,233,0.1),transparent_40%)]"
+          />
+          <div
+            className={`${container} grid items-center gap-12 lg:grid-cols-2`}
+          >
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-widest">
+                <ShieldCheck aria-hidden="true" className="size-4" />{" "}
+                {HOME_COPY.blindGuardProtection}
+              </div>
+              <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl">
+                {HOME_BLINDGUARD.title}
+              </h2>
+              <p className="mt-5 text-base text-slate-300 leading-relaxed">
+                {HOME_BLINDGUARD.description}
+              </p>
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/blindguard"
+                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl bg-sky-400 px-7 font-bold text-slate-950 transition hover:bg-sky-300"
+                >
+                  {HOME_BLINDGUARD.primaryAction}{" "}
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </Link>
+                <a
+                  href={whatsappLink(HOME_BLINDGUARD.whatsappMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-14 items-center justify-center gap-2.5 rounded-2xl border border-white/15 bg-white/[0.03] px-7 font-semibold text-white transition hover:bg-white/10"
+                >
+                  <MessageCircle
+                    aria-hidden="true"
+                    className="size-4 text-sky-400"
+                  />{" "}
+                  {HOME_BLINDGUARD.secondaryAction}
+                </a>
+              </div>
+            </div>
+
+            <div className="relative mx-auto w-full max-w-xl rounded-3xl border border-sky-400/20 bg-gradient-to-br from-[#102442] via-[#0b1729] to-[#0b111d] p-8 shadow-2xl">
+              <div className="relative flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-mono font-bold uppercase tracking-widest text-sky-300">
+                    {HOME_COPY.blindGuardName}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-400">
+                    Protección Extendida
+                  </p>
+                </div>
+                <BlindGuardEmblem className="size-16 shrink-0 sm:size-20" />
+              </div>
+
+              <div
+                className="relative mt-8 grid grid-cols-5 gap-2"
+                aria-label="Insignias de rango"
+              >
+                {HOME_BLINDGUARD.ranges.map((range) => {
+                  const style =
+                    RANGE_STYLES[
+                      rangeColorKey[range as keyof typeof rangeColorKey]
+                    ];
+                  return (
+                    <div
+                      key={range}
+                      className={`group grid aspect-[1/1.1] place-items-center overflow-hidden rounded-2xl border bg-[#060E1A] p-1 ${style.border}`}
+                    >
+                      <RangeInsignia
+                        letter={range}
+                        color={style.icon}
+                        accentColor={range === "S" ? "#fbbf24" : undefined}
+                        className="h-14 w-14 sm:h-16 sm:w-16"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </section>
 
-        <section id="confianza" className="scroll-mt-20 py-20 sm:py-28"><div className={container}><div className="mb-10 max-w-2xl sm:mb-12"><p className="text-xs font-bold uppercase tracking-[.2em] text-blue-300">{HOME_COPY.trustEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">{HOME_COPY.trustTitle}</h2></div><div className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">{HOME_TRUST_ITEMS.map((item, index) => <article key={item.title} className="group border-t border-white/15 py-5 transition-colors hover:border-sky-300/50 sm:py-6"><span className="text-xs font-semibold tracking-[.12em] text-sky-300">0{index + 1}</span><h3 className="mt-5 text-lg font-bold text-white">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></article>)}</div><Link href="/mectec" className="mt-7 inline-flex min-h-11 items-center gap-2 font-semibold text-white transition hover:text-blue-200">{HOME_COPY.trustAction}<ArrowRight aria-hidden="true" className="size-4" /></Link></div></section>
+        {/* CONTACTO */}
+        <section
+          id="contacto"
+          className="scroll-mt-20 bg-[#080F1B] py-28 sm:py-36 text-white"
+        >
+          <div className={container}>
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
+              <div className="lg:col-span-5">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
+                  {HOME_COPY.contactEyebrow}
+                </span>
+                <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl leading-tight">
+                  Hablemos de tu próximo recorrido.
+                </h2>
+                <p className="mt-5 text-base text-slate-300 leading-relaxed">
+                  ¿Necesitas mantenimiento, asesoría o información sobre
+                  nuestros servicios? Estamos para ayudarte.
+                </p>
 
-        <section id="contacto" className="relative scroll-mt-20 overflow-hidden border-t border-white/10 bg-[#080f1b] py-20 sm:py-28"><div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(37,99,235,.1),transparent_45%)]" /><div className={`${container} relative`}><div className="mb-10"><p className="text-xs font-bold uppercase tracking-[.2em] text-blue-300">{HOME_COPY.contactEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">{HOME_COPY.contactTitle}</h2></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-white/10 bg-[#060E1A] p-5 transition hover:border-blue-300/40"><MessageCircle aria-hidden="true" className="size-5 text-blue-300" /><h3 className="mt-5 font-semibold text-white">{HOME_COPY.whatsappLabel}</h3><p className="mt-1 text-sm text-white/60">{SITE.phone}</p></a><a href={`tel:${HOME_CONTACT.secondaryPhone}`} className="rounded-2xl border border-white/10 bg-[#060E1A] p-5 transition hover:border-blue-300/40"><Phone aria-hidden="true" className="size-5 text-blue-300" /><h3 className="mt-5 font-semibold text-white">{HOME_COPY.phoneLabel}</h3><p className="mt-1 text-sm text-white/60">{HOME_CONTACT.secondaryPhone}</p></a><a href={`mailto:${HOME_CONTACT.email}`} className="rounded-2xl border border-white/10 bg-[#060E1A] p-5 transition hover:border-blue-300/40"><Mail aria-hidden="true" className="size-5 text-blue-300" /><h3 className="mt-5 font-semibold text-white">{HOME_COPY.emailLabel}</h3><p className="mt-1 break-all text-sm text-white/60">{HOME_CONTACT.email}</p></a><a href={SITE.mapUrl} target="_blank" rel="noopener noreferrer" className="rounded-2xl border border-white/10 bg-[#060E1A] p-5 transition hover:border-blue-300/40"><MapPin aria-hidden="true" className="size-5 text-blue-300" /><h3 className="mt-5 font-semibold text-white">{HOME_COPY.addressLabel}</h3><p className="mt-1 text-sm leading-5 text-white/60">{HOME_CONTACT.address}</p></a></div><div className="mt-4 flex items-start gap-3 rounded-2xl border border-white/10 bg-[#060E1A] p-5"><Clock3 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-blue-300" /><div><h3 className="font-semibold text-white">{HOME_COPY.hoursLabel}</h3><p className="mt-1 text-sm text-white/60">{HOME_CONTACT.hours}</p></div></div></div></section>
-      </main>
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-8 inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-sky-400 px-7 font-bold text-slate-950 transition hover:bg-sky-300"
+                >
+                  <MessageCircle aria-hidden="true" className="size-5" />{" "}
+                  Escríbenos por WhatsApp{" "}
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </a>
+                <p className="mt-4 text-sm font-mono text-slate-400">
+                  {SITE.phone}
+                </p>
+              </div>
 
-      <footer className="border-t border-white/10 bg-[#060E1A]">
-        <div className={container}>
-          <div className="grid gap-10 py-12 sm:grid-cols-2 sm:py-16 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16">
-            <div>
-              <Link href="/" aria-label={`${SITE.name}, inicio`} className="inline-flex items-center gap-3">
-                <Image src="/brun-pwa-icon.svg" width={40} height={40} alt="" className="size-10 rounded-lg" />
-                <span className="text-lg font-bold tracking-tight text-white">{SITE.name}</span>
-              </Link>
-              <p className="mt-5 max-w-sm text-sm leading-6 text-slate-400">Servicio y experiencia para cuidar tu vehículo en {SITE.city}.</p>
-              <p className="mt-4 max-w-sm text-xs font-semibold leading-5 tracking-wide text-white/50">{HOME_BRAND_LINE}</p>
-            </div>
-            <nav aria-label="Enlaces del pie de página">
-              <h2 className="text-xs font-bold uppercase tracking-[.18em] text-sky-300">Explora</h2>
-              <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-1">
-                {HOME_NAVIGATION.map((item) => <li key={item.href}><Link href={item.href} className="text-sm text-slate-300 transition hover:text-white">{item.label}</Link></li>)}
-              </ul>
-            </nav>
-            <div>
-              <h2 className="text-xs font-bold uppercase tracking-[.18em] text-sky-300">Estamos para ayudarte</h2>
-              <p className="mt-5 text-sm leading-6 text-slate-300">{HOME_CONTACT.hours}</p>
-              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white transition hover:text-sky-300"><MessageCircle aria-hidden="true" className="size-4" />Escríbenos por WhatsApp<ArrowRight aria-hidden="true" className="size-4" /></a>
+              <div className="lg:col-span-7 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#102442] to-[#0b1729] shadow-2xl">
+                <div className="border-b border-white/15 p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-mono font-bold uppercase tracking-widest text-sky-300">
+                        Visítanos
+                      </p>
+                      <h3 className="mt-2 text-2xl font-bold">
+                        Cochabamba, Bolivia
+                      </h3>
+                    </div>
+                    <MapPin
+                      aria-hidden="true"
+                      className="size-7 text-sky-400 shrink-0"
+                    />
+                  </div>
+                  <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                    {HOME_CONTACT.address}
+                  </p>
+                  <a
+                    href={SITE.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-sky-400 hover:text-sky-300"
+                  >
+                    Cómo llegar{" "}
+                    <ArrowRight aria-hidden="true" className="size-4" />
+                  </a>
+                </div>
+
+                <div className="grid sm:grid-cols-2">
+                  <div className="border-b border-white/10 p-8 sm:border-b-0 sm:border-r">
+                    <Clock3
+                      aria-hidden="true"
+                      className="size-5 text-sky-400"
+                    />
+                    <h3 className="mt-4 font-bold">Horario de atención</h3>
+                    <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+                      {HOME_CONTACT.hours}
+                    </p>
+                  </div>
+                  <div className="p-8">
+                    <Phone aria-hidden="true" className="size-5 text-sky-400" />
+                    <h3 className="mt-4 font-bold">Contacto directo</h3>
+                    <a
+                      href={`tel:${HOME_CONTACT.secondaryPhone}`}
+                      className="mt-2 block text-sm text-slate-300 hover:text-white"
+                    >
+                      {HOME_CONTACT.secondaryPhone}
+                    </a>
+                    <a
+                      href={`mailto:${HOME_CONTACT.email}`}
+                      className="mt-2 block text-sm text-slate-300 hover:text-white break-all"
+                    >
+                      {HOME_CONTACT.email}
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2 border-t border-white/10 py-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between"><p>{HOME_FOOTER_LINE}</p><p>{SITE.city} · {SITE.country}</p></div>
+        </section>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="relative overflow-hidden border-t border-white/10 bg-[#060E1A]">
+        <div className={container}>
+          <div className="flex flex-col gap-6 border-b border-white/10 py-12 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
+                Brun Grupo Motriz · Cochabamba
+              </p>
+              <p className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                Tu camino continúa. Nosotros te acompañamos.
+              </p>
+            </div>
+            <a
+              href="#inicio"
+              className="inline-flex h-12 items-center gap-2 rounded-full border border-white/20 px-6 text-sm font-semibold text-white transition hover:border-sky-400 hover:text-sky-400 self-start sm:self-auto"
+            >
+              Volver arriba <span aria-hidden="true">↑</span>
+            </a>
+          </div>
+
+          <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <Link
+                href="/"
+                aria-label={`${SITE.name}, inicio`}
+                className="flex items-center gap-3"
+              >
+                <Image
+                  src="/brun-pwa-icon.svg"
+                  width={36}
+                  height={36}
+                  alt=""
+                  className="rounded-lg"
+                />
+                <span className="text-lg font-bold text-white">
+                  {SITE.name}
+                </span>
+              </Link>
+              <p className="mt-4 text-sm text-slate-400 leading-relaxed">
+                Servicio, experiencia y acompañamiento para cuidar tu vehículo
+                en cada etapa.
+              </p>
+              <p className="mt-3 text-xs font-mono font-semibold tracking-wide text-white/40">
+                {HOME_BRAND_LINE}
+              </p>
+            </div>
+
+            <nav aria-label="Enlaces del pie de página">
+              <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
+                Explora
+              </h2>
+              <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-1">
+                {HOME_NAVIGATION.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="text-sm text-slate-300 transition hover:text-white"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div>
+              <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-sky-400">
+                Estamos para ayudarte
+              </h2>
+              <p className="mt-5 text-sm text-slate-300 leading-relaxed">
+                {HOME_CONTACT.hours}
+              </p>
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-sky-300"
+              >
+                <MessageCircle
+                  aria-hidden="true"
+                  className="size-4 text-sky-400"
+                />{" "}
+                Escríbenos por WhatsApp{" "}
+                <ArrowRight aria-hidden="true" className="size-4" />
+              </a>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 py-6 text-xs text-slate-400 font-mono">
+            <p>{HOME_FOOTER_LINE}</p>
+            <p>
+              {SITE.city} · {SITE.country}
+            </p>
+          </div>
         </div>
       </footer>
     </>
