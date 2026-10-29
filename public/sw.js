@@ -1,4 +1,4 @@
-const CACHE_NAME = "brun-motriz-shell-v1";
+const CACHE_NAME = "brun-motriz-shell-v3";
 const OFFLINE_URL = "/sin-conexion";
 const STATIC_PREFIX = "/_next/static/";
 

@@ -7,7 +7,7 @@ export default function OfflinePage() {
         <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-blue-50 text-xl font-black text-blue-800">
           B
         </div>
-        <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-blue-700">Brun Motriz</p>
+        <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-blue-700">Brun Grupo Motriz</p>
         <h1 className="mt-2 text-2xl font-bold tracking-tight">Sin conexión a internet</h1>
         <p className="mt-3 text-sm leading-6 text-slate-500">
           Vuelve a conectarte para abrir el sistema. Los borradores guardados en este dispositivo siguen disponibles al recuperar la conexión.

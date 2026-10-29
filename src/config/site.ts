@@ -1,6 +1,6 @@
 // Datos centrales del negocio. Cambia aquí y se actualiza en toda la web.
 export const SITE = {
-  name: "Brun Motriz",
+  name: "Brun Grupo Motriz",
   tagline: "Servicio Mecánico Automotriz",
   city: "Cochabamba",
   country: "Bolivia",

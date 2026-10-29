@@ -3,9 +3,9 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Brun Motriz | Sistema de taller",
+    name: "Brun Grupo Motriz | Sistema de taller",
     short_name: "Brun Taller",
-    description: "Gestión de vehículos, recepciones e informes técnicos de Brun Motriz.",
+    description: "Gestión de vehículos, recepciones e informes técnicos de Brun Grupo Motriz.",
     lang: "es-BO",
     start_url: "/sistema/informes/nuevo",
     scope: "/",

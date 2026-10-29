@@ -35,7 +35,7 @@ export default function BlindGuardRoute() {
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-7 lg:px-10">
           <Link href="/" aria-label={`${SITE.name}, inicio`} className="flex shrink-0 items-center gap-2.5">
             <Image src="/brun-pwa-icon.svg" alt="" width={38} height={38} priority className="size-9 rounded-lg" />
-            <span className="text-sm font-bold tracking-tight sm:text-base">{SITE.name}<span className="hidden text-white/45 sm:inline"> · Grupo Motriz</span></span>
+            <span className="text-sm font-bold tracking-tight sm:text-base">{SITE.name}</span>
           </Link>
           <nav aria-label="Navegación principal" className="hidden items-center gap-5 lg:flex xl:gap-7">
             {HOME_NAVIGATION.map((item) => (

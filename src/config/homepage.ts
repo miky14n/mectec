@@ -7,15 +7,14 @@ export const HOME_NAVIGATION = [
 ] as const;
 
 export const HOME_COPY = {
-  brandSuffix: "Grupo Motriz",
   heroEyebrow: "Grupo Motriz",
   heroExperience: "Más de 13 años de experiencia técnica en Cochabamba.",
   servicesEyebrow: "Lo que hacemos",
   servicesTitle: "Servicios para tu vehículo",
   heroServicesAction: "Ver servicios",
   heroWhatsAppAction: "Escribir por WhatsApp",
-  trustEyebrow: "Brun Motriz",
-  trustTitle: "¿Por qué confiar en Brun Motriz?",
+  trustEyebrow: "Brun Grupo Motriz",
+  trustTitle: "¿Por qué confiar en Brun Grupo Motriz?",
   trustAction: "Conocer el taller",
   contactEyebrow: "Estamos en Cochabamba",
   contactTitle: "Contacto y ubicación",
@@ -92,7 +91,7 @@ export const HOME_CONTACT = {
 } as const;
 
 export const HOME_FOOTER_LINE =
-  "© 2026 Brun Motriz. Todos los derechos reservados.";
+  "© 2026 Brun Grupo Motriz. Todos los derechos reservados.";
 
 export const COMING_SOON = {
   title: "Próximamente",
