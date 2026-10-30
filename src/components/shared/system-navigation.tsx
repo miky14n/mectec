@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList, FileText, LayoutDashboard, Menu, PanelLeft, PanelRight, X } from "lucide-react";
+import { BarChart3, ClipboardList, FileText, LayoutDashboard, Menu, PanelLeft, PanelRight, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -10,6 +10,7 @@ const links = [
   { href: "/sistema", label: "Panel principal", icon: LayoutDashboard },
   { href: "/sistema/recepciones/nuevo", label: "Recepción de vehículo", icon: ClipboardList },
   { href: "/sistema/informes/nuevo", label: "Informe técnico", icon: FileText },
+  { href: "/sistema/reportes", label: "Reportes del taller", icon: BarChart3 },
 ];
 
 export function SystemNavigation({ children }: { children: ReactNode }) {
@@ -36,7 +37,7 @@ export function SystemNavigation({ children }: { children: ReactNode }) {
         <div className="flex min-h-[77px] items-center justify-between gap-2 border-b border-white/10 px-5 py-4"><div><p className="text-sm font-bold text-white">Sistema del taller</p><p className="mt-1 text-xs text-blue-200/70">Espacio de trabajo</p></div><button type="button" aria-label="Cerrar navegación" onClick={() => setOpen(false)} className="grid size-10 place-items-center rounded-lg text-blue-100 hover:bg-white/10 lg:hidden"><X className="size-5" /></button></div>
         <p className="mb-2 mt-6 px-6 text-xs font-bold uppercase tracking-[0.16em] text-blue-200/55">Navegación</p>
         <nav aria-label="Navegación del sistema" className="space-y-1">{links.map(({ href, label, icon: Icon }) => <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined} onClick={(event) => {
-          if (pathname !== "/sistema" && pathname !== href && !window.confirm("Al salir, los cambios no guardados y las fotografías de esta sesión se perderán. ¿Deseas continuar?")) {
+          if ((pathname === "/sistema/recepciones/nuevo" || pathname === "/sistema/informes/nuevo") && pathname !== href && !window.confirm("Al salir, los cambios no guardados y las fotografías de esta sesión se perderán. ¿Deseas continuar?")) {
             event.preventDefault();
             return;
           }

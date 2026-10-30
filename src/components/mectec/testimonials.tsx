@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { SITE } from "@/config/site";
 
 interface Testimonial {
@@ -133,10 +134,12 @@ export default function Testimonials() {
 
                 <figcaption className="flex items-center gap-4">
                   {current.avatar && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={current.avatar}
                       alt=""
+                      width={48}
+                      height={48}
+                      unoptimized
                       referrerPolicy="no-referrer"
                       className="w-12 h-12 rounded-full object-cover border border-border"
                     />

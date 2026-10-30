@@ -281,7 +281,7 @@ export default function Home() {
 
                 <div className="mt-6 space-y-3">
                   {/*Opción 1: Taller Mecánico */}
-                  <a
+                  <Link
                     href="/mectec"
                     className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-sky-400/40 hover:bg-sky-500/[0.06]"
                   >
@@ -299,10 +299,10 @@ export default function Home() {
                       </div>
                     </div>
                     <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
-                  </a>
+                  </Link>
 
                   {/* Opción 2: BlindGuard */}
-                  <a
+                  <Link
                     href="/blindguard"
                     className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-sky-400/40 hover:bg-sky-500/[0.06]"
                   >
@@ -320,10 +320,10 @@ export default function Home() {
                       </div>
                     </div>
                     <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
-                  </a>
+                  </Link>
 
                   {/* Opción 3: Catálogo de Repuestos */}
-                  <a
+                  <Link
                     href="/repuestos"
                     className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-sky-400/40 hover:bg-sky-500/[0.06]"
                   >
@@ -341,7 +341,7 @@ export default function Home() {
                       </div>
                     </div>
                     <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-slate-400">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import Logo from "@/components/mectec/logo";
 import { SITE, navLinks, whatsappLink } from "@/config/site";
@@ -12,9 +13,9 @@ export default function NavbarMectec() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <a href="/" aria-label={`${SITE.name} — inicio`}>
+          <Link href="/" aria-label={`${SITE.name} — inicio`}>
             <Logo />
-          </a>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
