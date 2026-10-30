@@ -549,7 +549,7 @@ export default function ReportForm() {
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-[#061426] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <Link href="/" aria-label="Volver al inicio" className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 text-white/80 hover:bg-white/10 hover:text-white"><ArrowLeft className="size-5" /></Link>
+            <Link href="/sistema" aria-label="Volver al panel del sistema" className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 text-white/80 hover:bg-white/10 hover:text-white"><ArrowLeft className="size-5" /></Link>
             <div className="min-w-0"><p className="truncate text-sm font-bold sm:text-base">Brun Grupo Motriz</p><p className="truncate text-xs text-blue-200">Sistema de gestión del taller</p></div>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
