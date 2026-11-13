@@ -3,30 +3,23 @@
 import {
   AlertTriangle,
   ArrowLeft,
-  Camera,
   Check,
   ChevronLeft,
   ChevronRight,
   ClipboardCheck,
   FileText,
-  ImagePlus,
   Plus,
   Save,
   Trash2,
   UserRound,
   Wrench,
-  X,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { type ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PwaInstallButton } from "@/components/shared/pwa-install-button";
 import { cn } from "@/lib/utils";
-import {
-  imageMimeTypes,
-  maxImageSizeBytes,
-} from "@/schemas/attachment.schema";
+import { SessionPhotoField, useSessionPhotos } from "@/components/shared/session-photos";
 import { technicalReportSchema } from "@/schemas/technical-report.schema";
 
 type Symptom = { id: string; description: string };
@@ -43,20 +36,11 @@ type Recommendation = {
   description: string;
   priority: "Inmediata" | "Próxima visita" | "Preventiva";
 };
-type Attachment = {
-  id: string;
-  fileName: string;
-  preview: string;
-  caption: string;
-  category: "Evidencia inicial" | "Diagnóstico" | "Trabajo realizado" | "Resultado final";
-};
-
 const steps = [
   { label: "Servicio", icon: ClipboardCheck },
   { label: "Síntomas", icon: AlertTriangle },
-  { label: "Trabajos", icon: Wrench },
-  { label: "Análisis", icon: FileText },
-  { label: "Evidencias", icon: Camera },
+  { label: "Sistemas", icon: Wrench },
+  { label: "Recomendaciones", icon: FileText },
   { label: "Revisión", icon: Check },
 ] as const;
 
@@ -130,12 +114,11 @@ export default function ReportForm() {
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [validationAttempted, setValidationAttempted] = useState(false);
-  const [photoErrors, setPhotoErrors] = useState<string[]>([]);
   const [service, setService] = useState({
     reportNumber: "",
     workOrder: "",
     requestDate: "",
-    serviceDate: new Date().toISOString().slice(0, 10),
+    serviceDate: "",
     servicePlace: "Brun Grupo Motriz",
     technician: "",
     serviceDescription: "Mantenimiento preventivo",
@@ -150,20 +133,32 @@ export default function ReportForm() {
   });
   const [symptoms, setSymptoms] = useState<Symptom[]>(initialSymptoms);
   const [findings, setFindings] = useState<Finding[]>(initialFindings);
-  const [analysis, setAnalysis] = useState("");
+  const [legacyAnalysis, setLegacyAnalysis] = useState("");
+  const [systemAnalyses, setSystemAnalyses] = useState<Record<string, string>>({});
   const [recommendations, setRecommendations] =
     useState<Recommendation[]>(initialRecommendations);
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const photoState = useSessionPhotos();
+  const { photos } = photoState;
+  const systems = Array.from(new Set([...findings.map((finding) => finding.system).filter(Boolean), ...Object.keys(systemAnalyses), ...photos.map((photo) => photo.section).filter((section) => section !== "vehicle")]));
 
   useEffect(() => {
     const draft = window.localStorage.getItem("brun-technical-report-draft");
-    if (!draft) return;
+    if (!draft) {
+      const now = new Date();
+      const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      // La fecha local se establece después de la hidratación y no reemplaza una fecha introducida.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setService((current) => current.serviceDate ? current : { ...current, serviceDate: localDate });
+      return;
+    }
     try {
       const parsed = JSON.parse(draft);
+      // El borrador se recupera del navegador después de la hidratación.
       setService(parsed.service ?? service);
       setSymptoms(parsed.symptoms?.length ? parsed.symptoms : initialSymptoms);
       setFindings(parsed.findings?.length ? parsed.findings : initialFindings);
-      setAnalysis(parsed.analysis ?? "");
+      setLegacyAnalysis(parsed.legacyAnalysis ?? parsed.analysis ?? "");
+      setSystemAnalyses(parsed.systemAnalyses ?? {});
       setRecommendations(
         parsed.recommendations?.length ? parsed.recommendations : initialRecommendations,
       );
@@ -184,11 +179,11 @@ export default function ReportForm() {
       service.technician,
       symptoms.some((item) => item.description.trim()),
       findings.some((item) => item.description.trim()),
-      analysis,
+      Object.values(systemAnalyses).some((value) => value.trim()) || legacyAnalysis,
       recommendations.some((item) => item.description.trim()),
     ];
     return Math.round((checks.filter(Boolean).length / checks.length) * 100);
-  }, [analysis, findings, recommendations, service, symptoms]);
+  }, [legacyAnalysis, systemAnalyses, findings, recommendations, service, symptoms]);
 
   function updateService(field: keyof typeof service, value: string) {
     setService((current) => ({ ...current, [field]: value }));
@@ -198,7 +193,7 @@ export default function ReportForm() {
     const timestamp = new Date().toISOString();
     window.localStorage.setItem(
       "brun-technical-report-draft",
-      JSON.stringify({ service, symptoms, findings, analysis, recommendations, savedAt: timestamp }),
+      JSON.stringify({ service, symptoms, findings, legacyAnalysis, systemAnalyses, recommendations, savedAt: timestamp }),
     );
     setSavedAt(timestamp);
   }
@@ -209,14 +204,10 @@ export default function ReportForm() {
       service,
       symptoms,
       findings,
-      analysis,
+      systemAnalyses,
+      legacyAnalysis,
       recommendations,
-      attachments: attachments.map(({ id, fileName, caption, category }) => ({
-        id,
-        fileName,
-        caption,
-        category,
-      })),
+      attachments: photos.map(({ id, name, caption, section }) => ({ id, fileName: name, caption, section })),
     });
 
     if (result.success) {
@@ -230,37 +221,10 @@ export default function ReportForm() {
     return false;
   }
 
-  function addPhotos(event: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(event.target.files ?? []);
-    const errors: string[] = [];
-    const validFiles = files.filter((file) => {
-      if (!imageMimeTypes.includes(file.type as (typeof imageMimeTypes)[number])) {
-        errors.push(`${file.name}: formato no permitido`);
-        return false;
-      }
-      if (file.size > maxImageSizeBytes) {
-        errors.push(`${file.name}: supera el máximo de 8 MB`);
-        return false;
-      }
-      return true;
-    });
-    const images = validFiles
-      .map((file) => ({
-        id: makeId(),
-        fileName: file.name,
-        preview: URL.createObjectURL(file),
-        caption: "",
-        category: "Diagnóstico" as const,
-      }));
-    setPhotoErrors(errors);
-    setAttachments((current) => [...current, ...images]);
-    event.target.value = "";
-  }
-
   const stepContent = [
     <div key="service">
       <SectionHeading
-        eyebrow="Paso 1 de 6"
+        eyebrow="Paso 1 de 5"
         title="Identificación del servicio"
         description="Registra la orden, el cliente y el vehículo atendido. Al conectar la base de datos, la placa permitirá recuperar estos datos automáticamente."
       />
@@ -329,13 +293,14 @@ export default function ReportForm() {
               </div>
             </Field>
           </div>
+          <div className="mt-4"><SessionPhotoField label="Foto del vehículo" section="vehicle" {...photoState} /></div>
         </div>
       </div>
     </div>,
 
     <div key="symptoms">
       <SectionHeading
-        eyebrow="Paso 2 de 6"
+        eyebrow="Paso 2 de 5"
         title="Síntomas reportados"
         description="Anota lo que informó el cliente antes de la revisión. Agrega tantos puntos como sean necesarios."
       />
@@ -361,64 +326,39 @@ export default function ReportForm() {
     </div>,
 
     <div key="findings">
-      <SectionHeading
-        eyebrow="Paso 3 de 6"
-        title="Trabajos y fallas detectadas"
-        description="Registra cada hallazgo por separado para construir el historial técnico del vehículo y relacionarlo después con fotografías y recomendaciones."
-      />
-      <div className="space-y-4">
-        {findings.map((finding, index) => (
-          <article key={finding.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-950/[0.02]">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-bold text-slate-950">Registro {index + 1}</h3>
-              <button type="button" aria-label="Eliminar registro" className="grid size-9 place-items-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600" onClick={() => setFindings((current) => current.length === 1 ? current : current.filter((item) => item.id !== finding.id))}>
-                <Trash2 className="size-4" />
-              </button>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Field label="Tipo">
-                <select className={inputClass} value={finding.type} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, type: e.target.value as Finding["type"] } : item))}>
-                  <option>Falla detectada</option><option>Trabajo realizado</option><option>Observación</option>
-                </select>
-              </Field>
-              <Field label="Sistema">
-                <select className={inputClass} value={finding.system} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, system: e.target.value } : item))}>
-                  <option value="">Seleccionar</option><option>Motor</option><option>Frenos</option><option>Suspensión</option><option>Dirección</option><option>Transmisión</option><option>Refrigeración</option><option>Electricidad</option><option>Carrocería</option><option>Otro</option>
-                </select>
-              </Field>
-              <Field label="Severidad">
-                <select className={inputClass} value={finding.severity} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, severity: e.target.value as Finding["severity"] } : item))}>
-                  <option>Informativo</option><option>Leve</option><option>Importante</option><option>Crítico</option>
-                </select>
-              </Field>
-              <Field label="Estado">
-                <select className={inputClass} value={finding.status} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, status: e.target.value as Finding["status"] } : item))}>
-                  <option>Detectado</option><option>Pendiente</option><option>Reparado</option><option>No autorizado</option>
-                </select>
-              </Field>
-              <div className="md:col-span-2 lg:col-span-4">
-                <Field label="Descripción" required>
-                  <textarea className={cn(textareaClass, "min-h-24")} value={finding.description} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, description: e.target.value } : item))} placeholder="Describe el trabajo realizado o la falla encontrada..." />
-                </Field>
-              </div>
-            </div>
-          </article>
+      <SectionHeading eyebrow="Paso 3 de 5" title="Trabajos y análisis por sistema" description="Agrupa cada falla o trabajo con el análisis y las fotografías del mismo sistema." />
+      <div className="space-y-5">
+        {systems.map((system) => (
+          <section key={system} className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+            <h3 className="text-lg font-bold text-slate-950">{system}</h3>
+            {findings.filter((finding) => finding.system === system).map((finding, index) => (
+              <article key={finding.id} className="rounded-xl border border-slate-200 bg-white p-4">
+                <div className="mb-4 flex items-center justify-between"><h4 className="font-bold text-slate-900">Registro {index + 1}</h4><button type="button" aria-label="Eliminar registro" className="grid size-10 place-items-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600" onClick={() => setFindings((current) => current.filter((item) => item.id !== finding.id))}><Trash2 className="size-4" /></button></div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <Field label="Tipo"><select className={inputClass} value={finding.type} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, type: e.target.value as Finding["type"] } : item))}><option>Falla detectada</option><option>Trabajo realizado</option><option>Observación</option></select></Field>
+                  <Field label="Severidad"><select className={inputClass} value={finding.severity} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, severity: e.target.value as Finding["severity"] } : item))}><option>Informativo</option><option>Leve</option><option>Importante</option><option>Crítico</option></select></Field>
+                  <Field label="Estado"><select className={inputClass} value={finding.status} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, status: e.target.value as Finding["status"] } : item))}><option>Detectado</option><option>Pendiente</option><option>Reparado</option><option>No autorizado</option></select></Field>
+                  <div className="sm:col-span-2 lg:col-span-3"><Field label="Descripción" required><textarea className={cn(textareaClass, "min-h-24")} value={finding.description} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, description: e.target.value } : item))} placeholder="Describe la falla o el trabajo..." /></Field></div>
+                </div>
+              </article>
+            ))}
+            <Button type="button" variant="outline" onClick={() => setFindings((current) => [...current, { id: makeId(), type: "Falla detectada", system, description: "", severity: "Importante", status: "Detectado" }])}><Plus /> Agregar registro</Button>
+            <Field label="Causa y análisis técnico" required><textarea className={textareaClass} value={systemAnalyses[system] ?? ""} onChange={(e) => setSystemAnalyses((current) => ({ ...current, [system]: e.target.value }))} placeholder="Describe el análisis de este sistema..." /></Field>
+            <SessionPhotoField label={`Fotos de ${system}`} section={system} {...photoState} />
+          </section>
         ))}
+        {findings.filter((finding) => !finding.system).map((finding) => <div key={finding.id} className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50 p-4"><p className="text-sm font-semibold text-amber-950">Asigna un sistema a este registro{finding.description ? `: ${finding.description}` : ""}.</p><Field label="Sistema" required><select className={inputClass} value={finding.system} onChange={(e) => setFindings((current) => current.map((item) => item.id === finding.id ? { ...item, system: e.target.value } : item))}><option value="">Seleccionar</option>{["Motor", "Frenos", "Suspensión", "Dirección", "Transmisión", "Refrigeración", "Electricidad", "Carrocería", "Otro"].map((system) => <option key={system}>{system}</option>)}</select></Field></div>)}
       </div>
-      <Button type="button" variant="outline" className="mt-4 h-10" onClick={() => setFindings((current) => [...current, { id: makeId(), type: "Falla detectada", system: "", description: "", severity: "Importante", status: "Detectado" }])}>
-        <Plus /> Agregar registro
-      </Button>
+      <Button type="button" variant="outline" className="mt-4 h-10" onClick={() => setFindings((current) => [...current, { id: makeId(), type: "Falla detectada", system: "", description: "", severity: "Importante", status: "Detectado" }])}><Plus /> Agregar sistema</Button>
+      {legacyAnalysis && <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4"><p className="mb-2 text-sm text-amber-950">Análisis del borrador anterior. Distribúyelo en los sistemas correspondientes; se conservará aquí.</p><Field label="Análisis anterior"><textarea className={textareaClass} value={legacyAnalysis} onChange={(e) => setLegacyAnalysis(e.target.value)} /></Field></div>}
     </div>,
 
     <div key="analysis">
       <SectionHeading
-        eyebrow="Paso 4 de 6"
-        title="Análisis y recomendaciones"
-        description="Explica las causas técnicas y registra las acciones recomendadas al propietario."
+        eyebrow="Paso 4 de 5"
+        title="Recomendaciones"
+        description="Registra las acciones recomendadas al propietario."
       />
-      <Field label="Causa y análisis técnico" required>
-        <textarea className={cn(textareaClass, "min-h-44")} value={analysis} onChange={(e) => setAnalysis(e.target.value)} placeholder="Describe la causa probable, consecuencias observadas y riesgos de continuar utilizando el vehículo..." />
-      </Field>
       <div className="mt-7 border-t border-slate-200 pt-7">
         <h3 className="mb-4 text-lg font-bold text-slate-950">Recomendaciones</h3>
         <div className="space-y-3">
@@ -440,49 +380,9 @@ export default function ReportForm() {
       </div>
     </div>,
 
-    <div key="attachments">
-      <SectionHeading
-        eyebrow="Paso 5 de 6"
-        title="Evidencias fotográficas"
-        description="Toma fotografías desde el celular o selecciónalas del dispositivo. En esta fase se conservan únicamente durante la sesión."
-      />
-      <label className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/60 p-6 text-center transition hover:border-blue-500 hover:bg-blue-50">
-        <span className="mb-3 grid size-12 place-items-center rounded-full bg-blue-700 text-white"><ImagePlus className="size-6" /></span>
-        <span className="font-bold text-slate-950">Agregar fotografías</span>
-        <span className="mt-1 text-sm text-slate-500">Cámara o galería · JPG, PNG o WebP</span>
-        <input type="file" accept="image/*" capture="environment" multiple className="sr-only" onChange={addPhotos} />
-      </label>
-      {photoErrors.length > 0 && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {photoErrors.map((error) => <p key={error}>{error}</p>)}
-        </div>
-      )}
-      {attachments.length > 0 && (
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {attachments.map((attachment) => (
-            <article key={attachment.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div className="relative aspect-[4/3] bg-slate-100">
-                <Image src={attachment.preview} alt="Vista previa de evidencia" fill unoptimized className="object-cover" />
-                <button type="button" aria-label="Eliminar fotografía" className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-slate-950/75 text-white backdrop-blur hover:bg-red-600" onClick={() => { URL.revokeObjectURL(attachment.preview); setAttachments((current) => current.filter((item) => item.id !== attachment.id)); }}>
-                  <X className="size-4" />
-                </button>
-              </div>
-              <div className="space-y-3 p-4">
-                <p className="truncate text-xs font-medium text-slate-400">{attachment.fileName}</p>
-                <input className={inputClass} value={attachment.caption} onChange={(e) => setAttachments((current) => current.map((item) => item.id === attachment.id ? { ...item, caption: e.target.value } : item))} placeholder="Descripción de la evidencia" />
-                <select className={inputClass} value={attachment.category} onChange={(e) => setAttachments((current) => current.map((item) => item.id === attachment.id ? { ...item, category: e.target.value as Attachment["category"] } : item))}>
-                  <option>Evidencia inicial</option><option>Diagnóstico</option><option>Trabajo realizado</option><option>Resultado final</option>
-                </select>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </div>,
-
     <div key="review">
       <SectionHeading
-        eyebrow="Paso 6 de 6"
+        eyebrow="Paso 5 de 5"
         title="Revisión del informe"
         description="Comprueba el contenido antes de finalizar. La generación del PDF y el envío se conectarán en la fase de backend."
       />
@@ -491,7 +391,7 @@ export default function ReportForm() {
           ["Vehículo", service.plate || "Sin placa", `${service.brand} ${service.model}`.trim() || "Sin modelo"],
           ["Síntomas", symptoms.filter((item) => item.description.trim()).length.toString(), "reportados"],
           ["Registros", findings.filter((item) => item.description.trim()).length.toString(), "trabajos o fallas"],
-          ["Evidencias", attachments.length.toString(), "fotografías"],
+          ["Evidencias", photos.length.toString(), "fotografías"],
         ].map(([label, value, detail]) => (
           <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</p>
@@ -500,6 +400,7 @@ export default function ReportForm() {
           </div>
         ))}
       </div>
+      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4"><h3 className="font-bold text-slate-950">Sistemas registrados</h3>{systems.length ? <ul className="mt-2 space-y-1 text-sm text-slate-600">{systems.map((system) => <li key={system}>{system}: {findings.filter((item) => item.system === system).length} registros · {photos.filter((photo) => photo.section === system).length} fotos</li>)}</ul> : <p className="mt-2 text-sm text-slate-500">Sin sistemas registrados.</p>}</div>
       <div className={cn(
         "mt-6 rounded-2xl border p-5",
         !validationAttempted

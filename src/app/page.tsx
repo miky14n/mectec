@@ -6,8 +6,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Clock3,
-  Cpu,
-  Layers,
+  List,
   MapPin,
   Menu,
   MessageCircle,
@@ -90,7 +89,7 @@ export default function Home() {
                 {SITE.name}
               </span>
               <span className="text-[10px] font-mono font-bold tracking-widest text-sky-400 uppercase">
-                Grupo Motriz · Cochabamba
+                Cochabamba
               </span>
             </div>
           </Link>
@@ -192,10 +191,15 @@ export default function Home() {
                 <strong className="font-semibold text-white">
                   {SITE.name}.
                 </strong>{" "}
-                Soluciones integrales para tu vehículo: taller mecánico
-                especializado, garantía extendida BlindGuard y catálogo digital
-                de repuestos[cite: 8].
+                Soluciones integrales para tu vehículo:
               </p>
+              <ul className="max-w-2xl list-inside list-disc text-lg font-normal leading-relaxed text-slate-300 sm:text-xl">
+                <li>Servicio Tecnico</li>
+                <li>
+                  Automotriz especializado - BlindGuard Garantia Extendida
+                </li>
+                <li>Automotriz - Catalogo digital de repuestos</li>
+              </ul>
 
               <div className="mt-4 flex items-center gap-2 text-xs font-semibold tracking-wider text-sky-400/90 uppercase">
                 {HOME_BRAND_LINE}
@@ -293,9 +297,6 @@ export default function Home() {
                         <p className="text-sm font-bold text-white">
                           1. Taller Mecánico Especializado
                         </p>
-                        <p className="text-xs text-slate-400">
-                          Diagnóstico computarizado previo[cite: 8]
-                        </p>
                       </div>
                     </div>
                     <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
@@ -314,9 +315,6 @@ export default function Home() {
                         <p className="text-sm font-bold text-white">
                           2. Garantía Extendida BlindGuard
                         </p>
-                        <p className="text-xs text-slate-400">
-                          Protección por Rangos D a S[cite: 8]
-                        </p>
                       </div>
                     </div>
                     <ArrowRight className="size-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-400 transition-all" />
@@ -334,9 +332,6 @@ export default function Home() {
                       <div>
                         <p className="text-sm font-bold text-white">
                           3. Venta de Repuestos
-                        </p>
-                        <p className="text-xs text-slate-400">
-                          Catálogo digital para consultar y descargar[cite: 8]
                         </p>
                       </div>
                     </div>

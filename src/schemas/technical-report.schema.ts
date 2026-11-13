@@ -60,24 +60,26 @@ export const reportRecommendationSchema = z.object({
 export const reportAttachmentSchema = z.object({
   id: z.string().min(1),
   fileName: z.string().trim().min(1).max(255),
-  caption: z.string().trim().min(3, "Cada fotografía necesita una descripción").max(500),
-  category: z.enum([
-    "Evidencia inicial",
-    "Diagnóstico",
-    "Trabajo realizado",
-    "Resultado final",
-  ]),
+  caption: z.string().trim().max(500),
+  section: z.string().trim().min(1),
 });
 
 export const technicalReportSchema = z.object({
   service: serviceDetailsSchema,
   symptoms: z.array(reportedSymptomSchema).min(1, "Registra al menos un síntoma"),
   findings: z.array(serviceFindingSchema).min(1, "Registra al menos un trabajo o falla"),
-  analysis: z.string().trim().min(10, "El análisis técnico debe ser más detallado").max(10000),
+  systemAnalyses: z.record(z.string(), z.string().max(10000)),
+  legacyAnalysis: z.string().max(10000).optional(),
   recommendations: z
     .array(reportRecommendationSchema)
     .min(1, "Registra al menos una recomendación"),
   attachments: z.array(reportAttachmentSchema).max(30, "El informe admite hasta 30 fotografías"),
+}).superRefine((report, ctx) => {
+  for (const system of new Set(report.findings.map((finding) => finding.system).filter(Boolean))) {
+    if ((report.systemAnalyses[system] ?? "").trim().length < 10) {
+      ctx.addIssue({ code: "custom", path: ["systemAnalyses", system], message: `Completa el análisis técnico de ${system} (al menos 10 caracteres)` });
+    }
+  }
 });
 
 export type TechnicalReportInput = z.input<typeof technicalReportSchema>;
